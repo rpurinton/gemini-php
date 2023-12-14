@@ -4,14 +4,18 @@ namespace RPurinton\GeminiPHP;
 
 class GeminiClient
 {
+    private $accessToken;
 
     public function __construct(
         private string $projectId,
-        private string $region,
-        private string $accessToken,
+        private string $regionName,
+        private string $credentialsPath,
         private string $modelName
     ) {
-        // Initialize the Gemini client with the provided credentials
+        // Access Token (uses gcloud CLI)
+        $cmd = 'export GOOGLE_APPLICATION_CREDENTIALS=' . $credentialsPath . ' && gcloud auth application-default print-access-token';
+        $this->accessToken = trim(shell_exec($cmd) ?? '');
+        if (empty($this->accessToken)) throw new \Exception('Error: Unable to get access token.');
     }
 
     public function getResponse($promptData): GeminiResponse
@@ -25,10 +29,10 @@ class GeminiClient
 
     private function buildUrl(): string
     {
-        return 'https://' . $this->region .
+        return 'https://' . $this->regionName .
             '-aiplatform.googleapis.com/v1' .
             '/projects/' . $this->projectId .
-            '/locations/' . $this->region .
+            '/locations/' . $this->regionName .
             '/publishers/google/models/' . $this->modelName .
             ':streamGenerateContent';
     }
