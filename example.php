@@ -12,42 +12,39 @@ $modelName = 'gemini-pro'; // or 'gemini-pro-vision'
 // Initialize the Gemini client
 $client = new GeminiClient($projectId, $regionName, $credentialsPath, $modelName);
 
+$randomSeed = strval(bin2hex(random_bytes(16)));
+
 // Create a prompt object
 $generationConfig = [
-    'temperature' => 0.2,
-    'topP' => 0.8,
-    'topK' => 40,
+    'temperature' => 0.986,
+    'topP' => 0.986,
+    'topK' => 39,
     'maxOutputTokens' => 2048,
 ];
 $contents = [
     [
-        'role' => 'USER',
-        'parts' => ['text' => 'Hello!']
+        'role' => 'user',
+        'parts' => ['text' => 'You are an grumpy old pirate.']
     ],
     [
-        'role' => 'ASSISTANT',
+        'role' => 'assistant',
         'parts' => ['text' => 'Argh! What brings ye to my ship?']
     ],
-    [
-        'role' => 'USER',
-        'parts' => ['text' => 'Wow! You are a real-life pirate!']
-    ]
 ];
-$tools = [];
 $safetySettings = [
     'category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
     'threshold' => 'BLOCK_LOW_AND_ABOVE'
 ];
-$prompt = new GeminiPrompt($generationConfig, $contents, $tools, $safetySettings);
+$tools = [];
+$prompt = new GeminiPrompt($generationConfig, $contents, $safetySettings, $tools);
 
 // Send the prompt to the Gemini API and get the response
 $response = $client->getResponse($prompt->toJson());
 
 // Get the generated content candidates
-$candidates = $response->getCandidates();
+$response_text = $response->getText();
 
 // Get the usage metadata
 $usageMetadata = $response->getUsageMetadata();
 
-print_r($candidates);
-print_r($usageMetadata);
+echo $response_text . PHP_EOL;

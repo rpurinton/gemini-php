@@ -21,10 +21,7 @@ class GeminiClient
     public function getResponse($promptData): GeminiResponse
     {
         $response_json = HTTPClient::post($this->buildUrl(), $this->buildHeaders(), $promptData);
-        $response = json_decode($response_json, true);
-        $candidates = $response['candidates'] ?? null;
-        $usageMetadata = $response['usageMetadata'] ?? null;
-        return new GeminiResponse($candidates, $usageMetadata);
+        return new GeminiResponse(json_decode($response_json, true));
     }
 
     private function buildUrl(): string
