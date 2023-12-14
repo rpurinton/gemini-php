@@ -11,24 +11,33 @@ class GeminiClient
         private string $accessToken,
         private string $modelName
     ) {
-        // Initialize the client with project ID, region, access token, and model name
+        // Initialize the Gemini client with the provided credentials
     }
 
     public function getResponse($promptData): GeminiResponse
     {
-        // Make a POST request to the Gemini API endpoint
-        // Use the provided prompt data to generate content
-        $url = "https://{$this->region}-aiplatform.googleapis.com/v1/projects/{$this->projectId}/locations/{$this->region}/publishers/google/models/{$this->modelName}:streamGenerateContent";
-        $response = json_decode(HTTPClient::post($url, [
-            'Authorization: Bearer ' . $this->accessToken,
-            'Content-Type: application/json; charset=utf-8',
-        ], $promptData), true);
-
-        // Get the generated content candidates from the response
+        $response_json = HTTPClient::post($this->buildUrl(), $this->buildHeaders(), $promptData);
+        $response = json_decode($response_json, true);
         $candidates = $response['candidates'] ?? null;
         $usageMetadata = $response['usageMetadata'] ?? null;
-
-        // Return the response from the API
         return new GeminiResponse($candidates, $usageMetadata);
+    }
+
+    private function buildUrl(): string
+    {
+        return 'https://' . $this->region .
+            '-aiplatform.googleapis.com/v1' .
+            '/projects/' . $this->projectId .
+            '/locations/' . $this->region .
+            '/publishers/google/models/' . $this->modelName .
+            ':streamGenerateContent';
+    }
+
+    private function buildHeaders(): array
+    {
+        return [
+            'Authorization: Bearer ' . $this->accessToken,
+            'Content-Type: application/json; charset=utf-8',
+        ];
     }
 }
