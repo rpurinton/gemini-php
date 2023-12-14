@@ -1,23 +1,24 @@
 <?php
 
-use RPurinton\GeminiPHP\{GeminiClient, GeminiPrompt, GeminiResponse};
+use RPurinton\GeminiPHP\{GeminiClient, GeminiPrompt};
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+$projectId = 'YOUR_PROJECT_ID';
+$region = 'YOUR_REGION';
+$accessToken = 'YOUR_ACCESS_TOKEN';
+
 // Initialize the Gemini client
-$client = new GeminiClient($projectId, $region, $accessToken);
+$client = new GeminiClient($projectId, $region, $accessToken, $modelName);
 
 // Create a prompt object
-$prompt = new GeminiPrompt($contents, $tools, $safetySettings, $generationConfig);
+$prompt = new GeminiPrompt($generationConfig, $contents, $tools, $safetySettings);
 
 // Send the prompt to the Gemini API and get the response
-$response = $client->streamGenerateContent($prompt->toJson());
-
-// Process the response
-$geminiResponse = new GeminiResponse($response['candidates'], $response['usageMetadata']);
+$response = $client->getResponse($prompt->toJson());
 
 // Get the generated content candidates
-$candidates = $geminiResponse->getCandidates();
+$candidates = $response->getCandidates();
 
 // Get the usage metadata
-$usageMetadata = $geminiResponse->getUsageMetadata();
+$usageMetadata = $response->getUsageMetadata();
