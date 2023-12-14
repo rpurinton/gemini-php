@@ -1,0 +1,29 @@
+{
+  "name": "rpurinton/gemini-php",
+  "description": "Simple PHP Client for Google Gemini / Vertex AI",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Russell Purinton",
+      "email": "russell.purinton@gmail.com"
+    }
+  ],
+  "support": {
+    "discord": "https://discord.gg/yMs5vgvyV4"
+  },
+  "require": {
+    "php": ">=8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "RPurinton\\GeminiPHP\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "version": "2.0.0",
+  "require-dev": {
+    "phpunit/phpunit": "^10.4"
+  }
+}
