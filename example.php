@@ -41,10 +41,7 @@ $prompt = new GeminiPrompt($generationConfig, $contents, $safetySettings, $tools
 // Send the prompt to the Gemini API and get the response
 $response = $client->getResponse($prompt->toJson());
 
-// Get the generated content candidates
-$response_text = $response->getText();
-
 // Get the usage metadata
 $usageMetadata = $response->getUsageMetadata();
 
-echo $response_text . PHP_EOL;
+echo $response->getText() . PHP_EOL;
