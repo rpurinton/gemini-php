@@ -18,7 +18,7 @@ gcloud CLI (Google Cloud SDK)
 
 To install Gemini PHP, you can use Composer. Run the following command:
 
-```
+```bash
 composer require rpurinton/gemini-php
 ```
 
@@ -31,7 +31,7 @@ Here is an example of how to use the Gemini PHP library:
 
 require 'vendor/autoload.php';
 
-use RPurinton\GeminiPHP\GeminiClient;
+use RPurinton\GeminiPHP\{GeminiClient, GeminiPrompt};
 
 $client = new GeminiClient(
     'ai-project-123456', // Your Project ID
@@ -69,7 +69,7 @@ $tools = [];
 $prompt = new GeminiPrompt($generationConfig, $contents, $safetySettings, $tools);
 
 // Send the prompt to the Gemini API and get the response
-$response = $client->getResponse($prompt->toJson());
+$response = $client->getResponse($prompt->toJson()); // Returns a GeminiResponse Object
 
 // Get the usage metadata
 $usageMetadata = $response->getUsageMetadata();
@@ -77,6 +77,7 @@ $usageMetadata = $response->getUsageMetadata();
 echo $response->getText() . PHP_EOL;
 
 ```
+
 ## Table of Contents
 
 - [Project Documentation](docs/README.md)
