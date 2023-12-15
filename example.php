@@ -12,8 +12,6 @@ $modelName = 'gemini-pro'; // or 'gemini-pro-vision'
 // Initialize the Gemini client
 $client = new GeminiClient($projectId, $regionName, $credentialsPath, $modelName);
 
-$randomSeed = strval(bin2hex(random_bytes(16)));
-
 // Create a prompt object
 $generationConfig = [
     'temperature' => 0.986,
