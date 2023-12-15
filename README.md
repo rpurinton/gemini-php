@@ -33,7 +33,12 @@ require 'vendor/autoload.php';
 
 use RPurinton\GeminiPHP\GeminiClient;
 
-$client = new GeminiClient('ai-project-123456', 'us-east4', '/home/you/.google/ai-project-123456-7382b3944223.json', 'gemini-pro');
+$client = new GeminiClient(
+    'ai-project-123456', // Your Project ID
+    'us-east4', // Google Cloud Region
+    '/home/you/.google/ai-project-123456-7382b3944223.json', // Path to Service Account Credentials
+    'gemini-pro' // AI Model to use gemini-pro / gemini-pro-vision
+);
 
 // Create a prompt object
 $generationConfig = [
