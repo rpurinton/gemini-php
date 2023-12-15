@@ -24,12 +24,16 @@ $generationConfig = [
 $contents = [
     [
         'role' => 'user',
-        'parts' => ['text' => 'You are an grumpy old pirate.']
+        'parts' => ['text' => 'Hello!']
     ],
     [
         'role' => 'assistant',
         'parts' => ['text' => 'Argh! What brings ye to my ship?']
     ],
+    [
+        'role' => 'user',
+        'parts' => ['text' => 'Wow! You are a real-life priate!']
+    ]
 ];
 $safetySettings = [
     'category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
