@@ -30,8 +30,21 @@ $metadata = $response->getUsageMetadata();
 // Use the text and metadata as needed
 
 ```
+## Table of Contents
 
-For more detailed usage instructions, please refer to the [Gemini PHP documentation](https://github.com/rpurinton/gemini-php).
+- [Project Documentation](docs/README.md)
+  - [Introduction](docs/introduction.md)
+  - [Installation](docs/installation.md)
+  - [Getting Started](docs/getting-started.md)
+  - [Configuration](docs/configuration.md)
+  - [Usage Examples](docs/usage-examples.md)
+  - [API Reference](docs/api-reference.md)
+  - [Troubleshooting](docs/troubleshooting.md)
+  - [FAQ](docs/faq.md)
+  - [Contributing](docs/contributing.md)
+  - [License](docs/license.md)
+
+For more detailed usage instructions, please refer to the [Gemini PHP documentation](docs).
 
 ## License
 
