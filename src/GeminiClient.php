@@ -24,7 +24,12 @@ class GeminiClient
     public function refreshAccessToken(): void
     {
         if (time() > $this->expiresAt) {
-            $cmd = 'export GOOGLE_APPLICATION_CREDENTIALS=' . $this->credentialsPath . ' && gcloud auth application-default print-access-token';
+            $gcloud = trim(shell_exec('which gcloud') ?? '');
+            if (empty($gcloud)) throw new \Exception('Error: gcloud not found.');
+            if (!file_exists($this->credentialsPath)) throw new \Exception('Error: credentials file not found.');
+            $credentials = json_decode(file_get_contents($this->credentialsPath), true);
+            if (!$credentials) throw new \Exception('Error: credentials file JSON error.');
+            $cmd = 'export GOOGLE_APPLICATION_CREDENTIALS=' . $this->credentialsPath . ' && ' . $gcloud . ' auth application-default print-access-token';
             $this->accessToken = trim(shell_exec($cmd) ?? '');
             $this->expiresAt = time() + self::VALID_TIME;
             if (empty($this->accessToken)) throw new \Exception('Error: Unable to get access token.');
