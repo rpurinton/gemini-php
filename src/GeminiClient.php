@@ -12,7 +12,6 @@ class GeminiClient
     private $expiresAt = 0;
     const VALID_TIME = 3600;
 
-
     public function __construct(private $config)
     {
         $this->credentialsPath = $config['credentialsPath'];
