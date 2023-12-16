@@ -13,14 +13,10 @@ class GeminiClient
         private string $credentialsPath,
         private string $modelName
     ) {
-        // Access Token (uses gcloud CLI)
-        $cmd = 'export GOOGLE_APPLICATION_CREDENTIALS=' . $credentialsPath . ' && gcloud auth application-default print-access-token --expiration=86400';
-        $this->accessToken = trim(shell_exec($cmd) ?? '');
-        $this->expiresAt = time() + 86400;
-        if (empty($this->accessToken)) throw new \Exception('Error: Unable to get access token.');
+        $this->refreshAccessToken();
     }
 
-    public function getResponse($promptData): GeminiResponse
+    public function refreshAccessToken(): void
     {
         if (time() > $this->expiresAt) {
             $cmd = 'export GOOGLE_APPLICATION_CREDENTIALS=' . $this->credentialsPath . ' && gcloud auth application-default print-access-token --expiration=86400';
@@ -28,6 +24,11 @@ class GeminiClient
             $this->expiresAt = time() + 86400;
             if (empty($this->accessToken)) throw new \Exception('Error: Unable to get access token.');
         }
+    }
+
+    public function getResponse($promptData): GeminiResponse
+    {
+        $this->refreshAccessToken();
         $response_json = HTTPClient::post($this->buildUrl(), $this->buildHeaders(), $promptData);
         return new GeminiResponse(json_decode($response_json, true));
     }
