@@ -4,17 +4,21 @@ namespace RPurinton\GeminiPHP;
 
 class GeminiClient
 {
-    private $accessToken;
+    private ?string $credentialsPath;
+    private ?string $projectId;
+    private ?string $regionName;
+    private ?string $modelName;
+    private ?string $accessToken;
     private $expiresAt = 0;
     const VALID_TIME = 3600;
 
 
-    public function __construct(
-        private string $projectId,
-        private string $regionName,
-        private string $credentialsPath,
-        private string $modelName
-    ) {
+    public function __construct(private $config)
+    {
+        $this->credentialsPath = $config['credentialsPath'];
+        $this->projectId = $config['projectId'];
+        $this->regionName = $config['regionName'];
+        $this->modelName = $config['modelName'];
         $this->refreshAccessToken();
     }
 
