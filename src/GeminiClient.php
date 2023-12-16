@@ -6,6 +6,8 @@ class GeminiClient
 {
     private $accessToken;
     private $expiresAt = 0;
+    const VALID_TIME = 3600;
+
 
     public function __construct(
         private string $projectId,
@@ -19,9 +21,9 @@ class GeminiClient
     public function refreshAccessToken(): void
     {
         if (time() > $this->expiresAt) {
-            $cmd = 'export GOOGLE_APPLICATION_CREDENTIALS=' . $this->credentialsPath . ' && gcloud auth application-default print-access-token --expiration=86400';
+            $cmd = 'export GOOGLE_APPLICATION_CREDENTIALS=' . $this->credentialsPath . ' && gcloud auth application-default print-access-token';
             $this->accessToken = trim(shell_exec($cmd) ?? '');
-            $this->expiresAt = time() + 86400;
+            $this->expiresAt = time() + self::VALID_TIME;
             if (empty($this->accessToken)) throw new \Exception('Error: Unable to get access token.');
         }
     }
