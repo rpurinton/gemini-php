@@ -17,6 +17,11 @@ class GeminiPrompt
         $this->tools = $dependencies['tools'] ?? [];
     }
 
+    public function push(array $new_content): void
+    {
+        $this->contents[] = $new_content;
+    }
+
     public function toJson(): string
     {
         // Convert the prompt to JSON
