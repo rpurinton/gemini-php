@@ -2,6 +2,10 @@
 
 namespace RPurinton\GeminiPHP;
 
+use Google\Auth\ApplicationDefaultCredentials;
+use Google\Auth\Middleware\AuthTokenMiddleware;
+use GuzzleHttp\HandlerStack;
+
 class GeminiClient
 {
     private ?string $credentialsPath;
@@ -21,6 +25,7 @@ class GeminiClient
         $this->refreshAccessToken();
     }
 
+    /*
     public function refreshAccessToken(): void
     {
         if (time() > $this->expiresAt) {
@@ -33,6 +38,25 @@ class GeminiClient
             $this->accessToken = trim(shell_exec($cmd) ?? '');
             $this->expiresAt = time() + self::VALID_TIME;
             if (empty($this->accessToken)) throw new \Exception('Error: Unable to get access token.');
+        }
+    }
+    */
+
+    public function refreshAccessToken(): void
+    {
+        if (time() > $this->expiresAt) {
+            putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $this->credentialsPath);
+            $auth = ApplicationDefaultCredentials::getCredentials();
+            $middleware = new AuthTokenMiddleware($auth);
+            $stack = HandlerStack::create();
+            $stack->push($middleware);
+            $client = new \GuzzleHttp\Client([
+                'handler' => $stack,
+                'auth' => 'google_auth'  // authorize all requests
+            ]);
+            $response = $client->get('https://www.googleapis.com/auth/cloud-platform');
+            $this->accessToken = json_decode($response->getBody(), true)['access_token'];
+            $this->expiresAt = time() + self::VALID_TIME;
         }
     }
 
