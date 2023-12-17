@@ -20,7 +20,7 @@ class GeminiResponse
         return $text;
     }
 
-    public function getUsageMetadata()
+    public function getUsageMetadata(): array
     {
         return $this->response[count($this->response) - 1]['usageMetadata'];
     }

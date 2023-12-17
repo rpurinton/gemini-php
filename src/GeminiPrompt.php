@@ -4,16 +4,20 @@ namespace RPurinton\GeminiPHP;
 
 class GeminiPrompt
 {
-    public function __construct(
-        private array $generationConfig,
-        private array $contents,
-        private array $safetySettings = [],
-        private array $tools = [],
-    ) {
-        // Initialize the prompt with contents, tools, safety settings, and generation config
+    private array $generationConfig;
+    private array $contents;
+    private array $safetySettings;
+    private array $tools;
+
+    public function __construct(array $dependencies)
+    {
+        $this->generationConfig = $dependencies['generationConfig'];
+        $this->contents = $dependencies['contents'];
+        $this->safetySettings = $dependencies['safetySettings'] ?? [];
+        $this->tools = $dependencies['tools'] ?? [];
     }
 
-    public function toJson()
+    public function toJson(): string
     {
         // Convert the prompt to JSON
         return json_encode([

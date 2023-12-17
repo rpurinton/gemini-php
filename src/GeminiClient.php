@@ -14,7 +14,7 @@ class GeminiClient
     private $expiresAt = 0;
     const VALID_TIME = 3600;
 
-    public function __construct(private $config)
+    public function __construct(private array $config)
     {
         $this->credentialsPath = $config['credentialsPath'];
         $this->projectId = $config['projectId'];
@@ -48,7 +48,7 @@ class GeminiClient
         if ($json['type'] !== 'service_account') throw new \Exception('Error: Credentials file type must be service_account.');
     }
 
-    public function getResponse($promptData): GeminiResponse
+    public function getResponse(string $promptData): GeminiResponse
     {
         $this->refreshAccessToken();
         $response_json = HTTPClient::post($this->buildUrl(), $this->buildHeaders(), $promptData);
