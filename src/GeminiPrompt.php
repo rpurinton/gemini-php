@@ -5,21 +5,21 @@ namespace RPurinton\GeminiPHP;
 class GeminiPrompt
 {
     private array $generationConfig;
-    private array $contents;
+    private array $content;
     private array $safetySettings;
     private array $tools;
 
     public function __construct(array $dependencies)
     {
         $this->generationConfig = $dependencies['generation_config'];
-        $this->contents = $dependencies['contents'];
+        $this->content = $dependencies['content'];
         $this->safetySettings = $dependencies['safety_settings'] ?? [];
         $this->tools = $dependencies['tools'] ?? [];
     }
 
     public function push(array $new_content): void
     {
-        $this->contents[] = $new_content;
+        $this->content[] = $new_content;
     }
 
     public function toJson(): string
