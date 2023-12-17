@@ -4,9 +4,8 @@ Gemini PHP is a PHP library for interacting with the Gemini AI platform. It prov
 
 ## Prerequisites
 
-PHP 8+
+PHP 8.2+
 Composer
-gcloud CLI (Google Cloud SDK)
 
 - Create a Google Cloud Project if you don't already have one.
 - Add the Vertex AI API to your project.
@@ -40,11 +39,11 @@ $client = new GeminiClient(
     'gemini-pro' // AI Model to use gemini-pro / gemini-pro-vision
 );
 
-// Create a prompt object
+// Create a prompt object (max values shown)
 $generationConfig = [
-    'temperature' => 0.986,
-    'topP' => 0.986,
-    'topK' => 39,
+    'temperature' => 1.0,
+    'topP' => 1.0,
+    'topK' => 40,
     'maxOutputTokens' => 2048,
 ];
 $contents = [
@@ -62,8 +61,10 @@ $contents = [
     ]
 ];
 $safetySettings = [
-    'category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-    'threshold' => 'BLOCK_LOW_AND_ABOVE'
+    [
+        'category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+        'threshold' => 'BLOCK_LOW_AND_ABOVE'
+    ]
 ];
 $tools = [];
 $prompt = new GeminiPrompt($generationConfig, $contents, $safetySettings, $tools);

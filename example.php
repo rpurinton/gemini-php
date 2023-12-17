@@ -8,33 +8,35 @@ $client = new GeminiClient(
     'ai-project-123456', // Your Project ID
     'us-east4', // Google Cloud Region
     '/home/you/.google/ai-project-123456-7382b3944223.json', // Path to Service Account Credentials
-    'gemini-pro' // AI Model to use gemini-pro / gemini-pro-vision
+    'gemini-pro', // AI Model to use gemini-pro / gemini-pro-vision
 );
 
-// Create a prompt object
+// Create a prompt object (max values shown)
 $generationConfig = [
-    'temperature' => 0.986,
-    'topP' => 0.986,
-    'topK' => 39,
+    'temperature' => 1.0,
+    'topP' => 1.0,
+    'topK' => 40,
     'maxOutputTokens' => 2048,
 ];
 $contents = [
     [
         'role' => 'user',
-        'parts' => ['text' => 'Hello!']
+        'parts' => ['text' => 'Hello!'],
     ],
     [
         'role' => 'assistant',
-        'parts' => ['text' => 'Argh! What brings ye to my ship?']
+        'parts' => ['text' => 'Argh! What brings ye to my ship?'],
     ],
     [
         'role' => 'user',
-        'parts' => ['text' => 'Wow! You are a real-life pirate!']
-    ]
+        'parts' => ['text' => 'Wow! You are a real-life pirate!'],
+    ],
 ];
 $safetySettings = [
-    'category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-    'threshold' => 'BLOCK_LOW_AND_ABOVE'
+    [
+        'category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+        'threshold' => 'BLOCK_LOW_AND_ABOVE',
+    ],
 ];
 $tools = [];
 $prompt = new GeminiPrompt($generationConfig, $contents, $safetySettings, $tools);
