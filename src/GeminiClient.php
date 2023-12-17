@@ -55,7 +55,8 @@ class GeminiClient
                 'auth' => 'google_auth'  // authorize all requests
             ]);
             $response = $client->get('https://www.googleapis.com/auth/cloud-platform');
-            $this->accessToken = json_decode($response->getBody(), true)['access_token'];
+            $body = $response->getBody();
+            $this->accessToken = json_decode($body, true)['access_token'];
             $this->expiresAt = time() + self::VALID_TIME;
         }
     }
