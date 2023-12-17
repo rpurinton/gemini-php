@@ -11,9 +11,9 @@ class GeminiPrompt
 
     public function __construct(array $dependencies)
     {
-        $this->generationConfig = $dependencies['generationConfig'];
+        $this->generationConfig = $dependencies['generation_config'];
         $this->contents = $dependencies['contents'];
-        $this->safetySettings = $dependencies['safetySettings'] ?? [];
+        $this->safetySettings = $dependencies['safety_settings'] ?? [];
         $this->tools = $dependencies['tools'] ?? [];
     }
 
