@@ -26,6 +26,11 @@ class GeminiPrompt
         $this->contents[] = $new_content;
     }
 
+    public function setContent(array $new_content): void
+    {
+        $this->contents = $new_content;
+    }
+
     public function token_count($text)
     {
         return count($this->encoder->encode($text));
