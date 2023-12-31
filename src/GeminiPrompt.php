@@ -6,18 +6,18 @@ use TikToken\Encoder;
 
 class GeminiPrompt
 {
-    private ?array $generationConfig;
+    private ?array $generation_config;
     private ?array $contents;
-    private ?array $safetySettings;
+    private ?array $safety_settings;
     private ?array $tools;
     private ?Encoder $encoder;
 
-    public function __construct(array $dependencies)
+    public function __construct(array $config)
     {
-        $this->generationConfig = $dependencies['generation_config'];
-        $this->contents = $dependencies['contents'];
-        $this->safetySettings = $dependencies['safety_settings'] ?? [];
-        $this->tools = $dependencies['tools'] ?? [];
+        $this->generation_config = $config['generation_config'];
+        $this->contents = $config['contents'];
+        $this->safety_settings = $config['safety_settings'] ?? [];
+        $this->tools = $config['tools'] ?? [];
         $this->encoder = new Encoder();
     }
 
@@ -38,12 +38,11 @@ class GeminiPrompt
 
     public function toJson(): string
     {
-        // Convert the prompt to JSON
         return json_encode([
             'contents' => $this->contents,
             'tools' => $this->tools,
-            'safety_settings' => $this->safetySettings,
-            'generation_config' => $this->generationConfig
+            'safety_settings' => $this->safety_settings,
+            'generation_config' => $this->generation_config
         ]);
     }
 }
