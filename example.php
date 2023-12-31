@@ -1,50 +1,62 @@
 <?php
 
-require 'vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use RPurinton\GeminiPHP\{GeminiClient, GeminiPrompt};
 
-$client = new GeminiClient(
-    'ai-project-123456', // Your Project ID
-    'us-east4', // Google Cloud Region
-    '/home/you/.google/ai-project-123456-7382b3944223.json', // Path to Service Account Credentials
-    'gemini-pro', // AI Model to use gemini-pro / gemini-pro-vision
-);
+$client = new GeminiClient([
+    'projectId' => 'ai-project-123456', // Your Project ID
+    'regionName' => 'us-east4', // Google Cloud Region
+    'credentialsPath' => '/home/you/.google/ai-project-123456-7382b3944223.json', // Path to Service Account Credentials
+    'modelName' => 'gemini-pro', // AI Model to use gemini-pro / gemini-pro-vision
+]);
 
-// Create a prompt object (max values shown)
-$generationConfig = [
-    'temperature' => 1.0,
-    'topP' => 1.0,
-    'topK' => 40,
-    'maxOutputTokens' => 2048,
-];
-$contents = [
-    [
-        'role' => 'user',
-        'parts' => ['text' => 'Hello!'],
+$prompt = new GeminiPrompt([
+    'generation_config' => [ // Max values shown
+        'temperature' => 1.0,
+        'topP' => 1.0,
+        'topK' => 40,
+        'maxOutputTokens' => 2048,
     ],
-    [
-        'role' => 'assistant',
-        'parts' => ['text' => 'Argh! What brings ye to my ship?'],
+    'contents' => [ // Must alternate user/assistant/user/assistant
+        [
+            'role' => 'user',
+            'parts' => ['text' => 'You are a helpful assistant.'],
+        ],
+        [
+            'role' => 'assistant',
+            'parts' => ['text' => 'I am a helpful assistant!'],
+        ],
     ],
-    [
-        'role' => 'user',
-        'parts' => ['text' => 'Wow! You are a real-life pirate!'],
+    'safety_settings' => [
+        [
+            'category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+            'threshold' => 'BLOCK_LOW_AND_ABOVE',
+        ],
     ],
-];
-$safetySettings = [
-    [
-        'category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-        'threshold' => 'BLOCK_LOW_AND_ABOVE',
-    ],
-];
-$tools = [];
-$prompt = new GeminiPrompt($generationConfig, $contents, $safetySettings, $tools);
+    'tools' => [],
+]);
 
-// Send the prompt to the Gemini API and get the response
-$response = $client->getResponse($prompt->toJson()); // Returns a GeminiResponse Object
+echo ('Press CTRL+C to exit...\n');
+while (true) {
+    // Get user input
+    $user_input = readline('user> ');
 
-// Get the usage metadata
-$usageMetadata = $response->getUsageMetadata();
+    // Add the user input to the prompt
+    $prompt->push(['role' => 'user', 'parts' => ['text' => $user_input]]);
 
-echo $response->getText() . PHP_EOL;
+    // Send the prompt to the Gemini API and get the response
+    $response = $client->getResponse($prompt->toJson()); // Returns a GeminiResponse Object
+
+    // Get the usage metadata if you need it
+    $usageMetadata = $response->getUsageMetadata();
+
+    // Get the response text
+    $assistant_output = $response->getText();
+
+    // Display the response text
+    echo ('assistant> ' . $assistant_output . PHP_EOL);
+
+    // Add the response to the prompt
+    $prompt->push(['role' => 'assistant', 'parts' => ['text' => $assistant_output]]);
+}
