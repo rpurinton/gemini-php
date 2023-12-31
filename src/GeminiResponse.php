@@ -17,11 +17,14 @@ class GeminiResponse
                 if (isset($candidate2['content']['parts']))
                     foreach ($candidate2['content']['parts'] as $part)
                         $text .= $part['text'];
+
+        if (empty($text)) return '<censored>';
         return $text;
     }
 
-    public function getUsageMetadata(): array
+    public function getUsageMetadata(): ?array
     {
-        return $this->response[count($this->response) - 1]['usageMetadata'];
+        if (!$this->response) return null;
+        return end($this->response)['usageMetadata'];
     }
 }
