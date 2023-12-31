@@ -77,7 +77,7 @@ while (true) {
     $usageMetadata = $response->getUsageMetadata();
 
     // Get the response text
-    $assistant_output = $response->getText();
+    $assistant_output = $response->getText() ?? '<censored>';
 
     // Display the response text
     echo ('assistant> ' . $assistant_output . PHP_EOL);
