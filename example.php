@@ -41,10 +41,31 @@ $prompt = new GeminiPrompt([
     'tools' => [],
 ]);
 
+$commands = function ($user_input) use ($prompt): bool {
+    $command = strtolower($user_input);
+    switch ($command) {
+        case 'exit':
+        case 'quit':
+            exit(0);
+        case 'clear':
+            $prompt->setContent([]);
+            echo ('Prompt cleared.' . PHP_EOL);
+            return true;
+        case 'help':
+            echo ('Commands: exit, quit, clear, help' . PHP_EOL);
+            return true;
+        default:
+            return false;
+    }
+};
+
 echo ('Press CTRL+C to exit...' . PHP_EOL);
 while (true) {
     // Get user input
     $user_input = readline('user> ');
+
+    // Check for commands
+    if ($commands($user_input)) continue;
 
     // Add the user input to the prompt
     $prompt->push(['role' => 'user', 'parts' => ['text' => $user_input]]);
