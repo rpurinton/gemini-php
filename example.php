@@ -4,6 +4,10 @@ require __DIR__ . '/vendor/autoload.php';
 
 use RPurinton\GeminiPHP\{GeminiClient, GeminiPrompt};
 
+// See:
+// https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/overview
+// https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/gemini#chat
+
 $client = new GeminiClient([
     'projectId' => 'ai-project-123456', // Your Project ID
     'regionName' => 'us-east4', // Google Cloud Region
@@ -37,7 +41,7 @@ $prompt = new GeminiPrompt([
     'tools' => [],
 ]);
 
-echo ('Press CTRL+C to exit...\n');
+echo ('Press CTRL+C to exit...' . PHP_EOL);
 while (true) {
     // Get user input
     $user_input = readline('user> ');
