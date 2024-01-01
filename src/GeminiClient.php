@@ -20,7 +20,15 @@ class GeminiClient
 
     /**
      * GeminiClient constructor.
-     * @param array $config
+     *
+     * Initializes a new instance of the GeminiClient with the provided configuration.
+     * The configuration array must include the following keys:
+     * - 'credentialsPath': The path to the file containing the API credentials.
+     * - 'projectId': The ID of the project in the Gemini platform.
+     * - 'regionName': The name of the region where the Gemini project is hosted.
+     * - 'modelName': The name of the model to use for generation.
+     *
+     * @param array $config The configuration array.
      */
     public function __construct(private array $config)
     {
@@ -30,7 +38,6 @@ class GeminiClient
         $this->modelName = $config['modelName'];
         $this->refreshAccessToken();
     }
-
     /**
      * Refreshes the access token.
      */
@@ -65,9 +72,10 @@ class GeminiClient
 
     /**
      * Gets the response.
-     * @param string $promptData
-     * @return GeminiResponse
-     * @throws \Exception
+     *
+     * @param string $promptData A JSON string representing the prompt data. This should be the output of the GeminiPrompt->toJson() method.
+     * @return GeminiResponse The response from the Gemini API.
+     * @throws \Exception If the response is not valid JSON or if the response is empty.
      */
     public function getResponse(string $promptData): GeminiResponse
     {

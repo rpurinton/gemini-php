@@ -18,7 +18,16 @@ class GeminiPrompt
 
     /**
      * GeminiPrompt constructor.
-     * @param array $config
+     *
+     * Initializes a new instance of the GeminiPrompt with the provided configuration.
+     * The configuration array should include the following keys:
+     * - 'generation_config': The configuration for the generation process.
+     * - 'contents': The contents of the prompt.
+     * - 'safety_settings' (optional): The safety settings for the prompt. If not provided, defaults to an empty array.
+     * - 'tools' (optional): The tools for the prompt. If not provided, defaults to an empty array.
+     *
+     * @param array $config The configuration array.
+     * @throws \Exception If the validation of the configuration fails.
      */
     public function __construct(array $config)
     {
@@ -32,8 +41,13 @@ class GeminiPrompt
 
     /**
      * Pushes content to the contents array.
-     * @param array $content
-     * @throws \Exception
+     *
+     * The content array should contain two keys:
+     * - 'role': A string that should be either 'user' or 'assistant'.
+     * - 'parts': An array that typically contains a 'text' key but can also contain 'images' or other supported parts.
+     *
+     * @param array $content The content array to push.
+     * @throws \Exception If the content validation fails.
      */
     public function push(array $content): void
     {
@@ -43,8 +57,13 @@ class GeminiPrompt
 
     /**
      * Sets the contents array.
-     * @param array $contents
-     * @throws \Exception
+     *
+     * The contents array should be an array of content arrays. Each content array should contain two keys:
+     * - 'role': A string that should be either 'user' or 'assistant'.
+     * - 'parts': An array that typically contains a 'text' key but can also contain 'images' or other supported parts.
+     *
+     * @param array $contents The array of content arrays to set.
+     * @throws \Exception If the content validation fails.
      */
     public function setContent(array $contents): void
     {
@@ -54,8 +73,12 @@ class GeminiPrompt
 
     /**
      * Sets the tools array.
-     * @param array $tools
-     * @throws \Exception
+     *
+     * The tools array should fit the Gemini OpenAPI object schema for function calling definitions.
+     * Each tool is an array that defines a function call, with keys for the function name and arguments.
+     *
+     * @param array $tools The array of tools to set.
+     * @throws \Exception If the tools validation fails.
      */
     public function setTools(array $tools): void
     {
