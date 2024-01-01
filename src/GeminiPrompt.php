@@ -25,11 +25,31 @@ class GeminiPrompt
     public function push(array $new_content): void
     {
         $this->contents[] = $new_content;
+        Validate::contents($this->contents) or throw new \Exception('Error: Content validation failed.');
     }
 
     public function setContent(array $new_content): void
     {
         $this->contents = $new_content;
+        Validate::contents($this->contents) or throw new \Exception('Error: Content validation failed.');
+    }
+
+    public function setTools(array $tools): void
+    {
+        $this->tools = $tools;
+        Validate::tools($this->tools) or throw new \Exception('Error: Tools validation failed.');
+    }
+
+    public function setSafetySettings(array $safety_settings): void
+    {
+        $this->safety_settings = $safety_settings;
+        Validate::safetySettings($this->safety_settings) or throw new \Exception('Error: Safety settings validation failed.');
+    }
+
+    public function setGenerationConfig(array $generation_config): void
+    {
+        $this->generation_config = $generation_config;
+        Validate::generationConfig($this->generation_config) or throw new \Exception('Error: Generation config validation failed.');
     }
 
     public function token_count($text)
