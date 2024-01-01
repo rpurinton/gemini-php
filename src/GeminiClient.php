@@ -4,6 +4,10 @@ namespace RPurinton\GeminiPHP;
 
 use Google\Auth\ApplicationDefaultCredentials;
 
+/**
+ * Class GeminiClient
+ * @package RPurinton\GeminiPHP
+ */
 class GeminiClient
 {
     private ?string $credentialsPath;
@@ -14,6 +18,10 @@ class GeminiClient
     private $expiresAt = 0;
     const VALID_TIME = 3600;
 
+    /**
+     * GeminiClient constructor.
+     * @param array $config
+     */
     public function __construct(private array $config)
     {
         $this->credentialsPath = $config['credentialsPath'];
@@ -23,6 +31,9 @@ class GeminiClient
         $this->refreshAccessToken();
     }
 
+    /**
+     * Refreshes the access token.
+     */
     public function refreshAccessToken(): void
     {
         if (time() > $this->expiresAt) {
@@ -35,6 +46,10 @@ class GeminiClient
         }
     }
 
+    /**
+     * Validates the credentials.
+     * @throws \Exception
+     */
     public function validateCredentials(): void
     {
         if (!file_exists($this->credentialsPath)) throw new \Exception('Error: Credentials file not found.');
@@ -48,6 +63,12 @@ class GeminiClient
         if ($json['type'] !== 'service_account') throw new \Exception('Error: Credentials file type must be service_account.');
     }
 
+    /**
+     * Gets the response.
+     * @param string $promptData
+     * @return GeminiResponse
+     * @throws \Exception
+     */
     public function getResponse(string $promptData): GeminiResponse
     {
         $this->refreshAccessToken();
@@ -62,6 +83,10 @@ class GeminiClient
         return new GeminiResponse($response_json);
     }
 
+    /**
+     * Builds the URL.
+     * @return string
+     */
     private function buildUrl(): string
     {
         return 'https://' . $this->regionName .
@@ -72,6 +97,10 @@ class GeminiClient
             ':streamGenerateContent';
     }
 
+    /**
+     * Builds the headers.
+     * @return array
+     */
     private function buildHeaders(): array
     {
         return [

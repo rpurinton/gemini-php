@@ -2,8 +2,23 @@
 
 namespace RPurinton\GeminiPHP;
 
+/**
+ * Class Validate
+ *
+ * This class provides static methods for validating various aspects of the GeminiPrompt object.
+ * It includes methods for validating the contents, generation configuration, safety settings, and tools.
+ *
+ * @package RPurinton\GeminiPHP
+ */
 class Validate
 {
+    /**
+     * Validates the contents of the provided array.
+     *
+     * @param mixed $contents The contents to validate.
+     * @return bool Returns true if validation passes, throws an exception otherwise.
+     * @throws \Exception If the contents are not set, not an array, empty, or if the roles do not alternate between "user" and "assistant".
+     */
     public static function contents(mixed $contents): bool
     {
         if (!isset($contents)) throw new \Exception('Error: Contents not set.');
@@ -23,6 +38,13 @@ class Validate
         return true;
     }
 
+    /**
+     * Validates the provided generation configuration.
+     *
+     * @param mixed $generation_config The generation configuration to validate.
+     * @return bool Returns true if validation passes, throws an exception otherwise.
+     * @throws \Exception If the generation config is not set, not an array, or if the keys do not match the expected keys.
+     */
     public static function generationConfig(mixed $generation_config): bool
     {
         if (!isset($generation_config)) throw new \Exception('Error: Generation config not set.');
@@ -56,6 +78,13 @@ class Validate
         return true;
     }
 
+    /**
+     * Validates the provided safety settings.
+     *
+     * @param mixed $safety_settings The safety settings to validate.
+     * @return bool Returns true if validation passes, throws an exception otherwise.
+     * @throws \Exception If the safety settings are not set, not an array, or if any setting is invalid.
+     */
     public static function safetySettings(mixed $safety_settings): bool
     {
         $valid_categories = [
@@ -93,6 +122,13 @@ class Validate
         return true;
     }
 
+    /**
+     * Validates the provided tools.
+     *
+     * @param mixed $tools The tools to validate.
+     * @return bool Returns true if validation passes, throws an exception otherwise.
+     * @throws \Exception If the tools are not set, not an array, or if any tool is invalid.
+     */
     public static function tools(mixed $tools): bool
     {
         if (!isset($tools)) throw new \Exception('Error: Tools not set.');

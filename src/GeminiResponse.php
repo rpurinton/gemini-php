@@ -2,13 +2,26 @@
 
 namespace RPurinton\GeminiPHP;
 
+/**
+ * Class GeminiResponse
+ * @package RPurinton\GeminiPHP
+ */
 class GeminiResponse
 {
+    /**
+     * GeminiResponse constructor.
+     * @param array|null $response
+     */
     public function __construct(private ?array $response)
     {
         // Initialize the response with candidates and usage metadata
     }
 
+    /**
+     * Returns the text from the response.
+     * @return string
+     * @throws \Exception
+     */
     public function getText(): string
     {
         $text = '';
@@ -26,6 +39,10 @@ class GeminiResponse
         }
     }
 
+    /**
+     * Returns the usage metadata from the response.
+     * @return array|null
+     */
     public function getUsageMetadata(): ?array
     {
         if (!$this->response) return null;
