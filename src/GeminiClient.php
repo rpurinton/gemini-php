@@ -52,7 +52,14 @@ class GeminiClient
     {
         $this->refreshAccessToken();
         $response_json = HTTPClient::post($this->buildUrl(), $this->buildHeaders(), $promptData);
-        return new GeminiResponse(json_decode($response_json, true));
+        $response_json = json_decode($response_json, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception('Error: Response is not valid JSON. ' . json_last_error_msg());
+        }
+        if (!count($response_json)) {
+            throw new \Exception('Error: Response is empty.');
+        }
+        return new GeminiResponse($response_json);
     }
 
     private function buildUrl(): string

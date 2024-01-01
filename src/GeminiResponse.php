@@ -12,14 +12,18 @@ class GeminiResponse
     public function getText(): string
     {
         $text = '';
-        foreach ($this->response as $candidate)
-            foreach ($candidate['candidates'] as $candidate2)
-                if (isset($candidate2['content']['parts']))
-                    foreach ($candidate2['content']['parts'] as $part)
-                        $text .= $part['text'];
-
-        if (empty($text)) return '<censored>';
-        return $text;
+        try {
+            foreach ($this->response as $candidate)
+                foreach ($candidate['candidates'] as $candidate2)
+                    if (isset($candidate2['content']['parts']))
+                        foreach ($candidate2['content']['parts'] as $part)
+                            $text .= $part['text'];
+        } catch (\Exception $e) {
+            throw new \Exception('Error: Unable to parse response. ' . $e->getMessage());
+        } finally {
+            if (empty($text)) return '<censored>';
+            return $text;
+        }
     }
 
     public function getUsageMetadata(): ?array
