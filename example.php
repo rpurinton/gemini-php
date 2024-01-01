@@ -61,27 +61,31 @@ $commands = function ($user_input) use ($prompt): bool {
 
 echo ('Press CTRL+C to exit...' . PHP_EOL);
 while (true) {
-    // Get user input
-    $user_input = readline('user> ');
+    try {
+        // Get user input
+        $user_input = readline('user> ');
 
-    // Check for commands
-    if ($commands($user_input)) continue;
+        // Check for commands
+        if ($commands($user_input)) continue;
 
-    // Add the user input to the prompt
-    $prompt->push(['role' => 'user', 'parts' => ['text' => $user_input]]);
+        // Add the user input to the prompt
+        $prompt->push(['role' => 'user', 'parts' => ['text' => $user_input]]);
 
-    // Send the prompt to the Gemini API and get the response
-    $response = $client->getResponse($prompt->toJson()); // Returns a GeminiResponse Object
+        // Send the prompt to the Gemini API and get the response
+        $response = $client->getResponse($prompt->toJson()); // Returns a GeminiResponse Object
 
-    // Get the usage metadata if you need it
-    $usageMetadata = $response->getUsageMetadata();
+        // Get the usage metadata if you need it
+        $usageMetadata = $response->getUsageMetadata();
 
-    // Get the response text
-    $assistant_output = $response->getText();
+        // Get the response text
+        $assistant_output = $response->getText();
 
-    // Display the response text
-    echo ('assistant> ' . $assistant_output . PHP_EOL);
+        // Display the response text
+        echo ('assistant> ' . $assistant_output . PHP_EOL);
 
-    // Add the response to the prompt
-    $prompt->push(['role' => 'assistant', 'parts' => ['text' => $assistant_output]]);
+        // Add the response to the prompt
+        $prompt->push(['role' => 'assistant', 'parts' => ['text' => $assistant_output]]);
+    } catch (\Exception $e) {
+        echo ('error> ' . $e->getMessage() . PHP_EOL);
+    }
 }
