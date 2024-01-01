@@ -13,6 +13,72 @@ namespace RPurinton\GeminiPHP;
 class Validate
 {
     /**
+     * Validates the provided client configuration.
+     *
+     * @param mixed $client_config The client configuration to validate.
+     * @return bool Returns true if validation passes, throws an exception otherwise.
+     * @throws \Exception If the client config is not set, not an array, or if any setting is invalid.
+     */
+    public static function clientConfig(mixed $client_config): bool
+    {
+        $valid_regions = [
+            'us-central1', // Iowa
+            'us-west4', // Las Vegas, Nevada
+            'northamerica-northeast1', // Montréal, Canada
+            'us-east4', // Northern Virginia
+            'us-west1', // Oregon
+            'asia-northeast3', // Seoul, Korea
+            'asia-southeast1', // Singapore
+            'asia-northeast1' // Tokyo, Japan
+        ];
+
+        $valid_models = [
+            'gemini-pro', // 32k token model (text + function calling)
+            'gemini-pro-vision', // 16k multi-modal model (text + images + video + function calling)
+        ];
+
+        $expected_keys = ['projectId', 'regionName', 'credentialsPath', 'modelName'];
+        $actual_keys = array_keys($client_config);
+        sort($expected_keys);
+        sort($actual_keys);
+
+        if (!isset($client_config)) throw new \Exception('Error: Client config not set.');
+        if (!is_array($client_config)) throw new \Exception('Error: Client config must be an array.');
+        if ($expected_keys !== $actual_keys) throw new \Exception('Error: Client config keys do not match expected keys.');
+
+        if (!is_string($client_config['projectId'])) throw new \Exception('Error: projectId must be a string.');
+        if (!is_string($client_config['regionName'])) throw new \Exception('Error: regionName must be a string.');
+        if (!in_array($client_config['regionName'], $valid_regions)) throw new \Exception('Error: Invalid regionName in client config.');
+        if (!is_string($client_config['credentialsPath'])) throw new \Exception('Error: credentialsPath must be a string.');
+        if (!self::credentials($client_config['credentialsPath'])) throw new \Exception('Error: Invalid credentialsPath in client config.');
+        if (!is_string($client_config['modelName'])) throw new \Exception('Error: modelName must be a string.');
+        if (!in_array($client_config['modelName'], $valid_models)) throw new \Exception('Error: Invalid modelName in client config.');
+
+        return true;
+    }
+
+    /**
+     * Validates the credentials.
+     * 
+     * @param mixed $credentialsPath The path to the credentials file.
+     * @return bool Returns true if validation passes, throws an exception otherwise.
+     * @throws \Exception If the credentials file is not found, not readable, or if the contents cannot be parsed.
+     */
+    public static function credentials(mixed $credentialsPath): bool
+    {
+        if (!file_exists($credentialsPath)) throw new \Exception('Error: Credentials file not found.');
+        if (!is_readable($credentialsPath)) throw new \Exception('Error: Credentials file not readable.');
+        $contents = file_get_contents($credentialsPath) or throw new \Exception('Error: Unable to read credentials file.');
+        $json = json_decode($contents, true) or throw new \Exception('Error: Unable to parse credentials file.');
+        if (!isset($json['project_id'])) throw new \Exception('Error: Credentials file missing project_id.');
+        if (!isset($json['client_email'])) throw new \Exception('Error: Credentials file missing client_email.');
+        if (!isset($json['private_key'])) throw new \Exception('Error: Credentials file missing private_key.');
+        if (!isset($json['type'])) throw new \Exception('Error: Credentials file missing type.');
+        if ($json['type'] !== 'service_account') throw new \Exception('Error: Credentials file type must be service_account.');
+        return true;
+    }
+
+    /**
      * Validates the contents of the provided array.
      *
      * @param mixed $contents The contents to validate.
