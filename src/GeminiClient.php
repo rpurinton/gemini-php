@@ -10,13 +10,11 @@ use Google\Auth\ApplicationDefaultCredentials;
  */
 class GeminiClient
 {
-    private ?string $credentialsPath;
     private ?string $projectId;
     private ?string $regionName;
     private ?string $modelName;
-    private ?string $accessToken;
-    private $expiresAt = 0;
-    const VALID_TIME = 3600;
+    private AccessTokenManager $tokenManager;
+
 
     /**
      * GeminiClient constructor.
@@ -33,25 +31,10 @@ class GeminiClient
     public function __construct(private array $config)
     {
         Validate::clientConfig($config) or throw new \Exception('Error: Client configuration validation failed.');
-        $this->credentialsPath = $config['credentialsPath'];
         $this->projectId = $config['projectId'];
         $this->regionName = $config['regionName'];
         $this->modelName = $config['modelName'];
-        $this->refreshAccessToken();
-    }
-    /**
-     * Refreshes the access token.
-     */
-    public function refreshAccessToken(): void
-    {
-        if (time() > $this->expiresAt) {
-            Validate::credentials($this->credentialsPath) or throw new \Exception('Error: Credentials validation failed.');
-            putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $this->credentialsPath);
-            $accessToken = ApplicationDefaultCredentials::getCredentials('https://www.googleapis.com/auth/cloud-platform')->fetchAuthToken();
-            if (!isset($accessToken['access_token'])) throw new \Exception('Error: Unable to get access token.');
-            $this->accessToken = $accessToken['access_token'];
-            $this->expiresAt = time() + self::VALID_TIME;
-        }
+        $this->tokenManager = new AccessTokenManager($config['credentialsPath']);
     }
 
     /**
@@ -63,16 +46,27 @@ class GeminiClient
      */
     public function getResponse(string $promptData): GeminiResponse
     {
-        $this->refreshAccessToken();
-        $response_json = HTTPClient::post($this->buildUrl(), $this->buildHeaders(), $promptData);
-        $response_json = json_decode($response_json, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception('Error: Response is not valid JSON. ' . json_last_error_msg());
+        $retryCount = 0;
+        while ($retryCount < 3) {
+            try {
+                $accessToken = $this->tokenManager->getAccessToken();
+                $response_json = HTTPClient::post($this->buildUrl(), $this->buildHeaders($accessToken), $promptData);
+
+                $response_json = json_decode($response_json, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new \Exception('Error: Response is not valid JSON. ' . json_last_error_msg());
+                }
+                if (!count($response_json)) {
+                    throw new \Exception('Error: Response is empty.');
+                }
+                return new GeminiResponse($response_json);
+            } catch (\Exception $e) {
+                $retryCount++;
+                if ($retryCount >= 3) {
+                    throw $e;
+                }
+            }
         }
-        if (!count($response_json)) {
-            throw new \Exception('Error: Response is empty.');
-        }
-        return new GeminiResponse($response_json);
     }
 
     /**
@@ -93,10 +87,10 @@ class GeminiClient
      * Builds the headers.
      * @return array
      */
-    private function buildHeaders(): array
+    private function buildHeaders(string $accessToken): array
     {
         return [
-            'Authorization: Bearer ' . $this->accessToken,
+            'Authorization: Bearer ' . $accessToken,
             'Content-Type: application/json; charset=utf-8',
         ];
     }

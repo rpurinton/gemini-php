@@ -12,6 +12,46 @@ namespace RPurinton\GeminiPHP;
  */
 class Validate
 {
+    const VALID_REGIONS = [
+        'us-central1', // Iowa
+        'us-west4', // Las Vegas, Nevada
+        'northamerica-northeast1', // Montréal, Canada
+        'us-east4', // Northern Virginia
+        'us-west1', // Oregon
+        'asia-northeast3', // Seoul, Korea
+        'asia-southeast1', // Singapore
+        'asia-northeast1' // Tokyo, Japan
+    ];
+
+    const VALID_MODELS = [
+        'gemini-pro', // 32k token model (text + function calling)
+        'gemini-pro-vision', // 16k multi-modal model (text + images + video + function calling)
+    ];
+
+    const VALID_CATEGORIES = [
+        'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+        'HARM_CATEGORY_HATE_SPEECH',
+        'HARM_CATEGORY_HARASSMENT',
+        'HARM_CATEGORY_DANGEROUS_CONTENT'
+    ];
+
+    const VALID_THRESHOLDS = [
+        'BLOCK_NONE',
+        'BLOCK_LOW_AND_ABOVE',
+        'BLOCK_MED_AND_ABOVE',
+        'BLOCK_HIGH_AND_ABOVE'
+    ];
+
+    const VALID_PROPERTY_TYPES = [
+        'string',
+        'number',
+        'integer',
+        'boolean',
+        'array',
+        'object',
+        'null'
+    ];
+
     /**
      * Validates the provided client configuration.
      *
@@ -21,22 +61,6 @@ class Validate
      */
     public static function clientConfig(mixed $client_config): bool
     {
-        $valid_regions = [
-            'us-central1', // Iowa
-            'us-west4', // Las Vegas, Nevada
-            'northamerica-northeast1', // Montréal, Canada
-            'us-east4', // Northern Virginia
-            'us-west1', // Oregon
-            'asia-northeast3', // Seoul, Korea
-            'asia-southeast1', // Singapore
-            'asia-northeast1' // Tokyo, Japan
-        ];
-
-        $valid_models = [
-            'gemini-pro', // 32k token model (text + function calling)
-            'gemini-pro-vision', // 16k multi-modal model (text + images + video + function calling)
-        ];
-
         $expected_keys = ['projectId', 'regionName', 'credentialsPath', 'modelName'];
         $actual_keys = array_keys($client_config);
         sort($expected_keys);
@@ -48,11 +72,11 @@ class Validate
 
         if (!is_string($client_config['projectId'])) throw new \Exception('Error: projectId must be a string.');
         if (!is_string($client_config['regionName'])) throw new \Exception('Error: regionName must be a string.');
-        if (!in_array($client_config['regionName'], $valid_regions)) throw new \Exception('Error: Invalid regionName in client config.');
+        if (!in_array($client_config['regionName'], self::VALID_REGIONS)) throw new \Exception('Error: Invalid regionName in client config.');
         if (!is_string($client_config['credentialsPath'])) throw new \Exception('Error: credentialsPath must be a string.');
         if (!self::credentials($client_config['credentialsPath'])) throw new \Exception('Error: Invalid credentialsPath in client config.');
         if (!is_string($client_config['modelName'])) throw new \Exception('Error: modelName must be a string.');
-        if (!in_array($client_config['modelName'], $valid_models)) throw new \Exception('Error: Invalid modelName in client config.');
+        if (!in_array($client_config['modelName'], self::VALID_MODELS)) throw new \Exception('Error: Invalid modelName in client config.');
 
         return true;
     }
@@ -161,20 +185,6 @@ class Validate
      */
     public static function safetySettings(mixed $safety_settings): bool
     {
-        $valid_categories = [
-            'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-            'HARM_CATEGORY_HATE_SPEECH',
-            'HARM_CATEGORY_HARASSMENT',
-            'HARM_CATEGORY_DANGEROUS_CONTENT'
-        ];
-
-        $valid_thresholds = [
-            'BLOCK_NONE',
-            'BLOCK_LOW_AND_ABOVE',
-            'BLOCK_MED_AND_ABOVE',
-            'BLOCK_HIGH_AND_ABOVE'
-        ];
-
         if (!isset($safety_settings)) throw new \Exception('Error: Safety settings not set.');
         if (!is_array($safety_settings)) throw new \Exception('Error: Safety settings must be an array.');
 
@@ -184,11 +194,11 @@ class Validate
                 throw new \Exception('Error: Each safety setting must contain a category and a threshold.');
             }
 
-            if (!in_array($setting['category'], $valid_categories)) {
+            if (!in_array($setting['category'], self::VALID_CATEGORIES)) {
                 throw new \Exception('Error: Invalid category in safety settings.');
             }
 
-            if (!in_array($setting['threshold'], $valid_thresholds)) {
+            if (!in_array($setting['threshold'], self::VALID_THRESHOLDS)) {
                 throw new \Exception('Error: Invalid threshold in safety settings.');
             }
         }
@@ -209,16 +219,6 @@ class Validate
         if (!is_array($tools)) throw new \Exception('Error: Tools must be an array.');
 
         if ($tools === []) return true;
-
-        $valid_property_types = [
-            'string',
-            'number',
-            'integer',
-            'boolean',
-            'array',
-            'object',
-            'null'
-        ];
 
         if (count($tools) > 1) throw new \Exception('Error: Only one set of function_declarations is currently supported.');
         $tool = $tools[0];
@@ -243,7 +243,7 @@ class Validate
                 if (!is_array($property) || !isset($property['type']) || !isset($property['description']) || !is_string($property['type']) || !is_string($property['description'])) {
                     throw new \Exception('Error: Each property in "properties" must be an array with "type" and "description" keys, both of which must be strings.');
                 }
-                if (!in_array($property['type'], $valid_property_types)) {
+                if (!in_array($property['type'], self::VALID_PROPERTY_TYPES)) {
                     throw new \Exception('Error: Invalid property type {$property["type"]} in {$functionDeclaration["name"]} function declaration.');
                 }
             }

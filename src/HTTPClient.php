@@ -18,14 +18,20 @@ class HTTPClient
      */
     public static function post(string $url, array $headers = [], string $data = ''): string
     {
-        $response = @file_get_contents($url, false, stream_context_create([
-            'http' => [
-                'method' => 'POST',
-                'header' => $headers,
-                'content' => $data
-            ]
-        ]));
-        if ($response === FALSE) throw new \Exception('HTTP request failed: ' . print_r(error_get_last(), true));
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            throw new \Exception('HTTP request failed: ' . curl_error($ch));
+        }
+
+        curl_close($ch);
+
         return $response;
     }
 }
