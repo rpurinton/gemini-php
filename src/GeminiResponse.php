@@ -12,7 +12,7 @@ class GeminiResponse
      * GeminiResponse constructor.
      * @param array|null $response
      */
-    public function __construct(private ?array $response)
+    public function __construct(private ?array $response = [])
     {
         // Initialize the response with candidates and usage metadata
     }
