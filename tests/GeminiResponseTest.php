@@ -9,7 +9,7 @@ class GeminiResponseTest extends TestCase
 {
     public function testGetText(): void
     {
-        $response = new GeminiResponse(['candidates' => [['content' => ['parts' => [['text' => 'Test response']]]]]]);
+        $response = new GeminiResponse([['candidates' => [['content' => ['parts' => [['text' => 'Test response']]]]]]]);
         $this->assertEquals('Test response', $response->getText());
     }
 
