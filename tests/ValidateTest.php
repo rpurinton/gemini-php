@@ -40,8 +40,8 @@ class ValidateTest extends TestCase
     public function testContents()
     {
         $valid_contents = [
-            ['role' => 'user', 'parts' => ['Hello']],
-            ['role' => 'assistant', 'parts' => ['Hello']]
+            ['role' => 'user', 'parts' => ['text' => 'Hello']],
+            ['role' => 'assistant', 'parts' => ['text' => 'Hello']]
         ];
         $this->assertTrue(Validate::contents($valid_contents));
 

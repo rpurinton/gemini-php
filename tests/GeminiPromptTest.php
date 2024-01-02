@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\BodySummarizerInterface;
 use PHPUnit\Framework\TestCase;
 use RPurinton\GeminiPHP\GeminiPrompt;
 
@@ -152,5 +153,63 @@ final class GeminiPromptTest extends TestCase
         $method = $reflection->getMethod('validate');
         $method->setAccessible(true);
         $this->assertTrue($method->invoke($prompt));
+    }
+
+    public function testSetContentWithValidContents(): void
+    {
+        $prompt = new GeminiPrompt($this->config);
+        $content = [
+            [
+                'role' => 'user',
+                'parts' => [['text' => 'New message']],
+            ],
+        ];
+        $this->assertTrue($prompt->setContents($content));
+    }
+
+    public function testSetContentWithInvalidContent(): void
+    {
+        $this->expectException(\Exception::class);
+        $prompt = new GeminiPrompt($this->config);
+        $invalidContent = [
+            [
+                'role' => 'invalid_role',
+                'parts' => [['text' => 'New message']],
+            ],
+        ];
+        $prompt->setContents($invalidContent);
+    }
+
+    public function testPushMultiWithValidContent(): void
+    {
+        $prompt = new GeminiPrompt($this->config);
+        $content = [
+            [
+                'role' => 'user',
+                'parts' => [['text' => 'New message']],
+            ],
+            [
+                'role' => 'assistant',
+                'parts' => [['text' => 'New message']],
+            ]
+        ];
+        $this->assertTrue($prompt->pushMultiple($content));
+    }
+
+    public function testPushMultiWithInvalidContent(): void
+    {
+        $this->expectException(\Exception::class);
+        $prompt = new GeminiPrompt($this->config);
+        $invalidContent = [
+            [
+                'role' => 'invalid_role',
+                'parts' => [['text' => 'New message']],
+            ],
+            [
+                'role' => 'assistant',
+                'parts' => [['text' => 'New message']],
+            ]
+        ];
+        $prompt->pushMultiple($invalidContent);
     }
 }

@@ -52,6 +52,11 @@ class Validate
         'null'
     ];
 
+    const VALID_ROLES = [
+        'user',
+        'assistant'
+    ];
+
     /**
      * Validates the provided client configuration.
      *
@@ -126,10 +131,11 @@ class Validate
         foreach ($contents as $content) {
             if (!isset($content['role'])) throw new \Exception('Error: Content role not set.');
             if (!is_string($content['role'])) throw new \Exception('Error: Content role must be a string.');
-            if (!in_array($content['role'], ['user', 'assistant'])) throw new \Exception('Error: Content role must be either "user" or "assistant".');
+            if (!in_array($content['role'], self::VALID_ROLES)) throw new \Exception('Error: Content role must be either "user" or "assistant".');
             if (!isset($content['parts'])) throw new \Exception('Error: Content parts not set.');
             if (!is_array($content['parts'])) throw new \Exception('Error: Content parts must be an array.');
             if (!count($content['parts'])) throw new \Exception('Error: Content parts must not be empty.');
+            if (!$last_role && $content['role'] !== 'user') throw new \Exception('Error: First content role must be "user".');
             if ($content['role'] === $last_role) throw new \Exception('Error: Content roles must alternate between "user" and "assistant".');
             $last_role = $content['role'];
         }

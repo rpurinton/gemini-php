@@ -63,7 +63,36 @@ class GeminiPrompt
     }
 
     /**
-     * Adds new content to the current contents array.
+     * Sets the entire contents array.
+     * 
+     * @param array $contents The contents array to be set.
+     * @return bool Returns true on successful setting.
+     * @throws \Exception If content validation fails.
+     */
+    public function setContents(array $contents): bool
+    {
+        Validate::contents($contents) or throw new \Exception("Error: Content validation failed for contents: " . json_encode($contents));
+        $this->contents = $contents;
+        return true;
+    }
+
+    /**
+     * Adds multiple messages to the contents array.
+     * 
+     * @param array $contents The contents to be added.
+     * @return bool Returns true on successful addition.
+     * @throws \Exception If content validation fails.
+     */
+    public function pushMultiple(array $contents): bool
+    {
+        $possibleContents = array_merge($this->contents, $contents);
+        Validate::contents($possibleContents) or throw new \Exception("Error: Content validation failed for contents: " . json_encode($contents));
+        $this->contents = $possibleContents;
+        return true;
+    }
+
+    /**
+     * Adds new a new single message to the contents array.
      *
      * @param array $content The content to be added.
      * @return bool Returns true on successful addition.
