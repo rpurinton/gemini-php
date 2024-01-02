@@ -1,0 +1,45 @@
+{
+    "generation_config": {
+        "temperature": 1.0,
+        "topP": 1.0,
+        "topK": 40,
+        "maxOutputTokens": 2048
+    },
+    "contents": [
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "You are a helpful assistant."
+                }
+            ]
+        },
+        {
+            "role": "assistant",
+            "parts": [
+                {
+                    "text": "I am a helpful assistant!"
+                }
+            ]
+        }
+    ],
+    "safety_settings": [
+        {
+            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            "threshold": "BLOCK_LOW_AND_ABOVE"
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_LOW_AND_ABOVE"
+        },
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_LOW_AND_ABOVE"
+        },
+        {
+            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+            "threshold": "BLOCK_LOW_AND_ABOVE"
+        }
+    ],
+    "tools": []
+}

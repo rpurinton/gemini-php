@@ -6,141 +6,137 @@ use TikToken\Encoder;
 
 /**
  * Class GeminiPrompt
+ * Handles the generation and management of content for the Gemini system.
+ * 
  * @package RPurinton\GeminiPHP
  */
 class GeminiPrompt
 {
-    private ?array $generation_config;
-    private ?array $base_contents;
-    private ?array $contents;
-    private ?array $safety_settings;
-    private ?array $tools;
-    private ?Encoder $encoder;
+    private const ROLE_USER = 'user';
+    private const ROLE_ASSISTANT = 'assistant';
 
     /**
-     * GeminiPrompt constructor.
+     * @var array Configuration for content generation.
+     */
+    private array $generationConfig;
+
+    /**
+     * @var array Base contents that are used to reset the current contents.
+     */
+    private array $baseContents;
+
+    /**
+     * @var array Current contents that are being managed.
+     */
+    private array $contents;
+
+    /**
+     * @var array Safety settings for content generation.
+     */
+    private array $safetySettings;
+
+    /**
+     * @var array Tools used in content generation.
+     */
+    private array $tools;
+
+    /**
+     * @var Encoder Encoder instance for tokenizing text.
+     */
+    private Encoder $encoder;
+
+    /**
+     * Constructor for the GeminiPrompt class.
+     * Initializes the class properties with provided configuration.
      *
-     * Initializes a new instance of the GeminiPrompt with the provided configuration.
-     * The configuration array should include the following keys:
-     * - 'generation_config': The configuration for the generation process.
-     * - 'contents': The contents of the prompt.
-     * - 'safety_settings' (optional): The safety settings for the prompt. If not provided, defaults to an empty array.
-     * - 'tools' (optional): The tools for the prompt. If not provided, defaults to an empty array.
-     *
-     * @param array $config The configuration array.
-     * @throws \Exception If the validation of the configuration fails.
+     * @param array $config Configuration array for initializing the class properties.
      */
     public function __construct(array $config)
     {
-        $this->generation_config = $config['generation_config'] ?? [];
-        $this->base_contents = $config['contents'] ?? [];
+        $this->generationConfig = $config['generation_config'] ?? [];
+        $this->baseContents = $config['contents'] ?? [];
         $this->contents = $config['contents'] ?? [];
-        $this->safety_settings = $config['safety_settings'] ?? [];
+        $this->safetySettings = $config['safety_settings'] ?? [];
         $this->tools = $config['tools'] ?? [];
         $this->encoder = new Encoder();
         $this->validate();
     }
 
     /**
-     * Pushes content to the contents array.
+     * Adds new content to the current contents array.
      *
-     * The content array should contain two keys:
-     * - 'role': A string that should be either 'user' or 'assistant'.
-     * - 'parts': An array that typically contains a 'text' key but can also contain 'images' or other supported parts.
-     *
-     * @param array $content The content array to push.
-     * @throws \Exception If the content validation fails.
+     * @param array $content The content to be added.
+     * @return bool Returns true on successful addition.
+     * @throws \Exception If content validation fails.
      */
-    public function push($content): void
+    public function push(array $content): bool
     {
-        $possible_contents = array_merge($this->contents, [$content]);
-        Validate::contents($possible_contents) or throw new \Exception('Error: Content validation failed.');
+        $possibleContents = array_merge($this->contents, [$content]);
+        Validate::contents($possibleContents) or throw new \Exception("Error: Content validation failed for content: " . json_encode($content));
         $this->contents[] = $content;
+        return true;
     }
 
     /**
-     * Sets the contents array.
+     * Adds a message with a specified role to the current contents.
      *
-     * The contents array should be an array of content arrays. Each content array should contain two keys:
-     * - 'role': A string that should be either 'user' or 'assistant'.
-     * - 'parts': An array that typically contains a 'text' key but can also contain 'images' or other supported parts.
-     *
-     * @param array $contents The array of content arrays to set.
-     * @throws \Exception If the content validation fails.
+     * @param string $role The role of the message sender.
+     * @param string $content The message content.
+     * @return bool Returns true on successful addition.
      */
-    public function setContent($contents): void
+    public function pushMessage(string $role, string $content): bool
     {
-        Validate::contents($contents) or throw new \Exception('Error: Contents validation failed.');
-        $this->contents = $contents;
+        return $this->push(['role' => $role, 'parts' => [['text' => $content]]]);
     }
 
     /**
-     * Resets the contents array to the base contents array.
-     * 
-     * The base contents array should be an array of content arrays. Each content array should contain two keys:
-     * - 'role': A string that should be either 'user' or 'assistant'.
-     * - 'parts': An array that typically contains a 'text' key but can also contain 'images' or other supported parts.
-     * 
-     * @throws \Exception If the content validation fails.
-     * @see setContent()
+     * Adds a user message to the current contents.
+     *
+     * @param string $content The user message content.
+     * @return bool Returns true on successful addition.
+     */
+    public function pushUser(string $content): bool
+    {
+        return $this->pushMessage(self::ROLE_USER, $content);
+    }
+
+    /**
+     * Adds an assistant message to the current contents.
+     *
+     * @param string $content The assistant message content.
+     * @return bool Returns true on successful addition.
+     */
+    public function pushAssistant(string $content): bool
+    {
+        return $this->pushMessage(self::ROLE_ASSISTANT, $content);
+    }
+
+    /**
+     * Resets the current contents to the base contents.
+     *
+     * @throws \Exception If base contents validation fails.
      */
     public function resetContent(): void
     {
-        Validate::contents($this->base_contents) or throw new \Exception('Error: Base contents validation failed.');
-        $this->contents = $this->base_contents;
+        Validate::contents($this->baseContents) or throw new \Exception("Error: Base contents validation failed for content: " . json_encode($this->baseContents));
+        $this->contents = $this->baseContents;
     }
 
     /**
-     * Sets the tools array.
+     * Counts the number of tokens in a given text.
      *
-     * The tools array should fit the Gemini OpenAPI object schema for function calling definitions.
-     * Each tool is an array that defines a function call, with keys for the function name and arguments.
-     *
-     * @param array $tools The array of tools to set.
-     * @throws \Exception If the tools validation fails.
+     * @param string $text The text to be tokenized.
+     * @return int The number of tokens.
      */
-    public function setTools(array $tools): void
-    {
-        Validate::tools($tools) or throw new \Exception('Error: Tools validation failed.');
-        $this->tools = $tools;
-    }
-
-    /**
-     * Sets the safety settings array.
-     * @param array $safety_settings
-     * @throws \Exception
-     */
-    public function setSafetySettings(array $safety_settings): void
-    {
-        Validate::safetySettings($safety_settings) or throw new \Exception('Error: Safety settings validation failed.');
-        $this->safety_settings = $safety_settings;
-    }
-
-    /**
-     * Sets the generation config array.
-     * @param array $generation_config
-     * @throws \Exception
-     */
-    public function setGenerationConfig(array $generation_config): void
-    {
-        Validate::generationConfig($generation_config) or throw new \Exception('Error: Generation config validation failed.');
-        $this->generation_config = $generation_config;
-    }
-
-    /**
-     * Returns the token count of the given text.
-     * @param $text
-     * @return int
-     */
-    public function token_count($text)
+    public function tokenCount(string $text): int
     {
         return count($this->encoder->encode($text));
     }
 
     /**
-     * Returns the JSON representation of the GeminiPrompt object.
-     * @return string
-     * @throws \Exception
+     * Converts the current state of the object to JSON.
+     *
+     * @return string JSON representation of the object.
      */
     public function toJson(): string
     {
@@ -148,22 +144,33 @@ class GeminiPrompt
         return json_encode([
             'contents' => $this->contents,
             'tools' => $this->tools,
-            'safety_settings' => $this->safety_settings,
-            'generation_config' => $this->generation_config
+            'safety_settings' => $this->safetySettings,
+            'generation_config' => $this->generationConfig
         ]);
     }
 
     /**
-     * Validates the GeminiPrompt object.
-     * @return bool
-     * @throws \Exception
+     * Magic method to convert the object to a string.
+     *
+     * @return string JSON representation of the object.
      */
-    public function validate(): bool
+    public function __toString(): string
     {
-        Validate::contents($this->contents) or throw new \Exception('Error: Content validation failed.');
-        Validate::tools($this->tools) or throw new \Exception('Error: Tools validation failed.');
-        Validate::safetySettings($this->safety_settings) or throw new \Exception('Error: Safety settings validation failed.');
-        Validate::generationConfig($this->generation_config) or throw new \Exception('Error: Generation config validation failed.');
+        return $this->toJson();
+    }
+
+    /**
+     * Validates the current state of the object.
+     *
+     * @return bool Returns true if validation passes.
+     * @throws \Exception If any validation fails.
+     */
+    private function validate(): bool
+    {
+        Validate::contents($this->contents) or throw new \Exception("Error: Content validation failed for contents: " . json_encode($this->contents));
+        Validate::tools($this->tools) or throw new \Exception("Error: Tools validation failed for tools: " . json_encode($this->tools));
+        Validate::safetySettings($this->safetySettings) or throw new \Exception("Error: Safety settings validation failed for settings: " . json_encode($this->safetySettings));
+        Validate::generationConfig($this->generationConfig) or throw new \Exception("Error: Generation config validation failed for config: " . json_encode($this->generationConfig));
         return true;
     }
 }

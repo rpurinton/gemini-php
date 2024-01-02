@@ -1,0 +1,6 @@
+{
+    "projectId": "ai-project-123456",
+    "regionName": "us-east4",
+    "credentialsPath": "/home/you/.google/ai-project-123456-7382b3944223.json",
+    "modelName": "gemini-pro"
+}

@@ -5,47 +5,25 @@ require __DIR__ . '/vendor/autoload.php';
 use RPurinton\GeminiPHP\{GeminiClient, GeminiPrompt};
 
 // See:
+// https://github.com/rpurinton/gemini-php
 // https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/overview
-// https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/gemini#chat
+
 
 try {
-    $client = new GeminiClient([
-        'projectId' => 'ai-project-123456', // Your Project ID
-        'regionName' => 'us-east4', // Google Cloud Region
-        'credentialsPath' => '/home/you/.google/ai-project-123456-7382b3944223.json', // Path to Service Account Credentials
-        'modelName' => 'gemini-pro', // AI Model to use gemini-pro / gemini-pro-vision
-    ]);
-
-    $prompt = new GeminiPrompt([
-        'generation_config' => [ // Max values shown
-            'temperature' => 1.0,
-            'topP' => 1.0,
-            'topK' => 40,
-            'maxOutputTokens' => 2048,
-        ],
-        'contents' => [ // Must alternate user/assistant/user/assistant
-            [
-                'role' => 'user',
-                'parts' => ['text' => 'You are a helpful assistant.'],
-            ],
-            [
-                'role' => 'assistant',
-                'parts' => ['text' => 'I am a helpful assistant!'],
-            ],
-        ],
-        'safety_settings' => [
-            [
-                'category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-                'threshold' => 'BLOCK_LOW_AND_ABOVE',
-            ],
-        ],
-        'tools' => [],
-    ]);
+    // Create a GeminiClient object
+    $example_client = file_get_contents(__DIR__ . '/example-client.json') or throw new \Exception('Unable to read example-client.json');
+    $example_client = json_decode($example_client, true) or throw new \Exception('Unable to decode example-client.json');
+    $client = new GeminiClient($example_client) or throw new \Exception('Unable to create GeminiClient object');
+    // Create a GeminiPrompt object
+    $example_prompt = file_get_contents(__DIR__ . '/example-prompt.json') or throw new \Exception('Unable to read example-prompt.json');
+    $example_prompt = json_decode($example_prompt, true) or throw new \Exception('Unable to decode example-prompt.json');
+    $prompt = new GeminiPrompt($example_prompt) or throw new \Exception('Unable to create GeminiPrompt object');
 } catch (\Exception $e) {
     echo ('fatal> ' . $e->getMessage() . PHP_EOL);
     exit(1);
 }
 
+// Create a function to handle commands
 $commands = function ($user_input) use ($prompt): bool {
     $command = strtolower($user_input);
     switch ($command) {
