@@ -31,8 +31,8 @@ class GeminiPrompt
      */
     public function __construct(array $config)
     {
-        $this->generation_config = $config['generation_config'];
-        $this->contents = $config['contents'];
+        $this->generation_config = $config['generation_config'] ?? [];
+        $this->contents = $config['contents'] ?? [];
         $this->safety_settings = $config['safety_settings'] ?? [];
         $this->tools = $config['tools'] ?? [];
         $this->encoder = new Encoder();
@@ -49,10 +49,11 @@ class GeminiPrompt
      * @param array $content The content array to push.
      * @throws \Exception If the content validation fails.
      */
-    public function push(array $content): void
+    public function push($content): void
     {
+        $possible_contents = array_merge($this->contents, [$content]);
+        Validate::contents($possible_contents) or throw new \Exception('Error: Content validation failed.');
         $this->contents[] = $content;
-        Validate::contents($this->contents) or throw new \Exception('Error: Content validation failed.');
     }
 
     /**
@@ -65,10 +66,10 @@ class GeminiPrompt
      * @param array $contents The array of content arrays to set.
      * @throws \Exception If the content validation fails.
      */
-    public function setContent(array $contents): void
+    public function setContent($contents): void
     {
+        Validate::contents($contents) or throw new \Exception('Error: Contents validation failed.');
         $this->contents = $contents;
-        Validate::contents($this->contents) or throw new \Exception('Error: Content validation failed.');
     }
 
     /**
@@ -82,8 +83,8 @@ class GeminiPrompt
      */
     public function setTools(array $tools): void
     {
+        Validate::tools($tools) or throw new \Exception('Error: Tools validation failed.');
         $this->tools = $tools;
-        Validate::tools($this->tools) or throw new \Exception('Error: Tools validation failed.');
     }
 
     /**
@@ -93,8 +94,8 @@ class GeminiPrompt
      */
     public function setSafetySettings(array $safety_settings): void
     {
+        Validate::safetySettings($safety_settings) or throw new \Exception('Error: Safety settings validation failed.');
         $this->safety_settings = $safety_settings;
-        Validate::safetySettings($this->safety_settings) or throw new \Exception('Error: Safety settings validation failed.');
     }
 
     /**
@@ -104,8 +105,8 @@ class GeminiPrompt
      */
     public function setGenerationConfig(array $generation_config): void
     {
+        Validate::generationConfig($generation_config) or throw new \Exception('Error: Generation config validation failed.');
         $this->generation_config = $generation_config;
-        Validate::generationConfig($this->generation_config) or throw new \Exception('Error: Generation config validation failed.');
     }
 
     /**
