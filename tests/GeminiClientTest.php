@@ -7,17 +7,27 @@ use RPurinton\GeminiPHP\GeminiClient;
 
 class GeminiClientTest extends TestCase
 {
-    public function testValidateCredentials(): void
+    public function testConstructorWithInvalidProjectId(): void
     {
         $this->expectException(\Exception::class);
-        $client = new GeminiClient(['credentialsPath' => 'invalid_path.json']);
-        $client->validateCredentials();
+        new GeminiClient(['projectId' => '']);
     }
 
-    public function testGetResponse(): void
+    public function testConstructorWithInvalidRegionName(): void
     {
         $this->expectException(\Exception::class);
-        $client = new GeminiClient(['credentialsPath' => 'valid_path.json', 'projectId' => 'project_id', 'regionName' => 'region', 'modelName' => 'model']);
-        $client->getResponse('{}');
+        new GeminiClient(['projectId' => 'ai-project-123456', 'regionName' => '']);
+    }
+
+    public function testConstructorWithInvalidCredentialsPath(): void
+    {
+        $this->expectException(\Exception::class);
+        new GeminiClient(['projectId' => 'ai-project-123456', 'regionName' => 'us-east4', 'credentialsPath' => '']);
+    }
+
+    public function testConstructorWithInvalidModelName(): void
+    {
+        $this->expectException(\Exception::class);
+        new GeminiClient(['projectId' => 'ai-project-123456', 'regionName' => 'us-east4', 'credentialsPath' => 'valid_path.json', 'modelName' => '']);
     }
 }
