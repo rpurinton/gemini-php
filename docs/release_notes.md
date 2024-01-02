@@ -30,4 +30,17 @@ The changes include code refactoring for better clarity and maintainability.## R
 - `tests/GeminiResponseTest.php`: Added test for simulated error response.
 
 ### Notes
-The changes include dependency updates and improved error handling in response parsing.
+The changes include dependency updates and improved error handling in response parsing.## Release Notes for v0.1.4
+
+### Modified Files
+- `composer.json`: Version bump to `0.1.4`.
+- `composer.lock`: Updated content hash.
+- `example.php`: Refactored to use JSON configuration files.
+- `src/GeminiPrompt.php`: Code refactoring and added new methods.
+
+### Added Files
+- `example-client.json`: New example configuration for the client.
+- `example-prompt.json`: New example configuration for the prompt.
+
+### Notes
+The changes include refactoring for better code organization, the addition of example configuration files, and updates to dependencies.
