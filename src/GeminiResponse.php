@@ -14,7 +14,10 @@ class GeminiResponse
      */
     public function __construct(private ?array $response = [])
     {
-        // Initialize the response with candidates and usage metadata
+        if (isset($response[0]['error'])) {
+            extract($response[0]['error']); // This will create $code, $message, and $status variables
+            throw new \Exception("Error Code: $code, Message: $message, Status: $status");
+        }
     }
 
     /**
