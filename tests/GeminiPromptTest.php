@@ -83,6 +83,7 @@ final class GeminiPromptTest extends TestCase
         $prompt->pushUser('New message');
         $prompt->resetContent();
         $contents = $prompt->toJson();
+        $contents = json_decode($contents, true);
         $this->assertEquals($this->config['contents'], $contents['contents']);
     }
 
