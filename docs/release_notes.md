@@ -14,4 +14,11 @@
 - `src/Validate.php`: Added constants for valid regions, models, categories, thresholds, and property types.
 
 ### Notes
-The changes include improvements to error handling, code maintainability, and the addition of new features for better access token management and API request retries.
+The changes include improvements to error handling, code maintainability, and the addition of new features for better access token management and API request retries.## Release Notes for v0.1.2
+
+### Modified Files
+- `example.php`: Changed method call from `setContent([])` to `resetContent()` for clearing the prompt.
+- `src/GeminiPrompt.php`: Added `resetContent` method and `base_contents` property to reset the prompt to its base state.
+
+### Notes
+The changes include code refactoring for better clarity and maintainability.
