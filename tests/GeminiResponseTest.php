@@ -20,7 +20,7 @@ class GeminiResponseTest extends TestCase
         $this->assertEquals(['characters' => 100], $response->getUsageMetadata());
     }
 
-    public function simulateError(): void
+    public function testSimulatedError(): void
     {
         $this->expectException(\Exception::class);
         $response = new GeminiResponse([['error' => ['code' => 400, 'message' => 'Test error', 'status' => 'Test status']]]);
