@@ -27,6 +27,8 @@ try {
 $commands = function ($user_input) use ($prompt): bool {
     $command = strtolower($user_input);
     switch ($command) {
+        case '':
+            return true;
         case 'exit':
         case 'quit':
             exit(0);
