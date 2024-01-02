@@ -29,7 +29,7 @@ class ValidateTest extends TestCase
 
     public function testCredentials()
     {
-        $valid_credentials_path = '/path/to/valid_credentials.json';
+        $valid_credentials_path = __DIR__ . '/test_configs/service_account.json';
         $this->assertTrue(Validate::credentials($valid_credentials_path));
 
         $invalid_credentials_path = '/path/to/invalid_credentials.json';
