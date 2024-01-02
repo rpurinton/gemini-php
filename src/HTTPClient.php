@@ -25,11 +25,7 @@ class HTTPClient
                 'content' => $data
             ]
         ]));
-
-        if ($response === FALSE) {
-            throw new \Exception('HTTP request failed: ' . error_get_last()['message']);
-        }
-
+        if ($response === FALSE) throw new \Exception('HTTP request failed: ' . print_r(error_get_last(), true));
         return $response;
     }
 }
