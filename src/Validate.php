@@ -70,11 +70,19 @@ class Validate
         if (!is_readable($credentialsPath)) throw new \Exception('Error: Credentials file not readable.');
         $contents = file_get_contents($credentialsPath) or throw new \Exception('Error: Unable to read credentials file.');
         $json = json_decode($contents, true) or throw new \Exception('Error: Unable to parse credentials file.');
-        if (!isset($json['project_id'])) throw new \Exception('Error: Credentials file missing project_id.');
-        if (!isset($json['client_email'])) throw new \Exception('Error: Credentials file missing client_email.');
-        if (!isset($json['private_key'])) throw new \Exception('Error: Credentials file missing private_key.');
-        if (!isset($json['type'])) throw new \Exception('Error: Credentials file missing type.');
+
+        $requiredKeys = [
+            'type', 'project_id', 'private_key_id', 'private_key', 'client_email',
+            'client_id', 'auth_uri', 'token_uri', 'auth_provider_x509_cert_url',
+            'client_x509_cert_url', 'universe_domain'
+        ];
+
+        foreach ($requiredKeys as $key) {
+            if (!isset($json[$key])) throw new \Exception("Error: Credentials file missing {$key}.");
+        }
+
         if ($json['type'] !== 'service_account') throw new \Exception('Error: Credentials file type must be service_account.');
+
         return true;
     }
 
