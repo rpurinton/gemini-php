@@ -73,6 +73,7 @@ final class GeminiPromptTest extends TestCase
     public function testPushAssistant(): void
     {
         $prompt = new GeminiPrompt($this->config);
+        $prompt->pushUser('New message');
         $this->assertTrue($prompt->pushAssistant('New message'));
     }
 
