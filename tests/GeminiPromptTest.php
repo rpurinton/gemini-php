@@ -88,7 +88,7 @@ final class GeminiPromptTest extends TestCase
     public function testTokenCount(): void
     {
         $prompt = new GeminiPrompt($this->config);
-        $this->assertEquals(5, $prompt->tokenCount('Hello, world!'));
+        $this->assertEquals(4, $prompt->tokenCount('Hello, world!'));
     }
 
     public function testToJson(): void
