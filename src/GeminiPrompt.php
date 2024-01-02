@@ -11,6 +11,7 @@ use TikToken\Encoder;
 class GeminiPrompt
 {
     private ?array $generation_config;
+    private ?array $base_contents;
     private ?array $contents;
     private ?array $safety_settings;
     private ?array $tools;
@@ -32,6 +33,7 @@ class GeminiPrompt
     public function __construct(array $config)
     {
         $this->generation_config = $config['generation_config'] ?? [];
+        $this->base_contents = $config['contents'] ?? [];
         $this->contents = $config['contents'] ?? [];
         $this->safety_settings = $config['safety_settings'] ?? [];
         $this->tools = $config['tools'] ?? [];
@@ -70,6 +72,22 @@ class GeminiPrompt
     {
         Validate::contents($contents) or throw new \Exception('Error: Contents validation failed.');
         $this->contents = $contents;
+    }
+
+    /**
+     * Resets the contents array to the base contents array.
+     * 
+     * The base contents array should be an array of content arrays. Each content array should contain two keys:
+     * - 'role': A string that should be either 'user' or 'assistant'.
+     * - 'parts': An array that typically contains a 'text' key but can also contain 'images' or other supported parts.
+     * 
+     * @throws \Exception If the content validation fails.
+     * @see setContent()
+     */
+    public function resetContent(): void
+    {
+        Validate::contents($this->base_contents) or throw new \Exception('Error: Base contents validation failed.');
+        $this->contents = $this->base_contents;
     }
 
     /**
