@@ -21,4 +21,13 @@ The changes include improvements to error handling, code maintainability, and th
 - `src/GeminiPrompt.php`: Added `resetContent` method and `base_contents` property to reset the prompt to its base state.
 
 ### Notes
-The changes include code refactoring for better clarity and maintainability.
+The changes include code refactoring for better clarity and maintainability.## Release Notes for v0.1.3
+
+### Modified Files
+- `composer.json`: Version bump to `0.1.3`.
+- `composer.lock`: Updated content hash.
+- `src/GeminiResponse.php`: Added error handling in the constructor.
+- `tests/GeminiResponseTest.php`: Added test for simulated error response.
+
+### Notes
+The changes include dependency updates and improved error handling in response parsing.
