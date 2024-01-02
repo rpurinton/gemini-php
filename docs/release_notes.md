@@ -43,7 +43,9 @@ The changes include dependency updates and improved error handling in response p
 - `example-prompt.json`: New example configuration for the prompt.
 
 ### Notes
-The changes include refactoring for better code organization, the addition of example configuration files, and updates to dependencies.## Release Notes for v0.1.5
+The changes include refactoring for better code organization, the addition of example configuration files, and updates to dependencies.
+
+## Release Notes for v0.1.5
 
 ### Modified Files
 - `composer.json`: Version bump to `0.1.5`.
