@@ -82,9 +82,8 @@ final class GeminiPromptTest extends TestCase
         $prompt = new GeminiPrompt($this->config);
         $prompt->pushUser('New message');
         $prompt->resetContent();
-        $contents = $prompt->toJson();
-        $contents = json_decode($contents, true);
-        $this->assertEquals($this->config['contents'], $contents['contents']);
+        $result = json_decode($prompt->toJson(), true);
+        $this->assertEquals($this->config['contents'], $result['contents']);
     }
 
     public function testTokenCount(): void
