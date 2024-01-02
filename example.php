@@ -53,7 +53,7 @@ $commands = function ($user_input) use ($prompt): bool {
         case 'quit':
             exit(0);
         case 'clear':
-            $prompt->resetContents();
+            $prompt->resetContent();
             echo ('Prompt cleared.' . PHP_EOL);
             return true;
         case 'help':
