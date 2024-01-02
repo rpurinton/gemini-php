@@ -15,7 +15,7 @@ class GeminiResponseTest extends TestCase
 
     public function testGetUsageMetadata(): void
     {
-        $response = new GeminiResponse(['usageMetadata' => ['characters' => 100]]);
+        $response = new GeminiResponse([['usageMetadata' => ['characters' => 100]]]);
         $this->assertIsArray($response->getUsageMetadata());
         $this->assertEquals(['characters' => 100], $response->getUsageMetadata());
     }
