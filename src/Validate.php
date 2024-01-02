@@ -208,33 +208,48 @@ class Validate
         if (!isset($tools)) throw new \Exception('Error: Tools not set.');
         if (!is_array($tools)) throw new \Exception('Error: Tools must be an array.');
 
-        foreach ($tools as $tool) {
-            if (!is_array($tool) || !isset($tool['function_declarations'])) {
-                throw new \Exception('Error: Each tool must be an array with a "function_declarations" key.');
+        if ($tools === []) return true;
+
+        $valid_property_types = [
+            'string',
+            'number',
+            'integer',
+            'boolean',
+            'array',
+            'object',
+            'null'
+        ];
+
+        if (count($tools) > 1) throw new \Exception('Error: Only one set of function_declarations is currently supported.');
+        $tool = $tools[0];
+        if (!is_array($tool) || !isset($tool['function_declarations'])) {
+            throw new \Exception('Error: Each tool must be an array with a "function_declarations" key.');
+        }
+
+        foreach ($tool['function_declarations'] as $functionDeclaration) {
+            if (!is_array($functionDeclaration) || !isset($functionDeclaration['name']) || !isset($functionDeclaration['description']) || !isset($functionDeclaration['parameters'])) {
+                throw new \Exception('Error: Each function declaration must be an array with "name", "description", and "parameters" keys.');
             }
 
-            foreach ($tool['function_declarations'] as $functionDeclaration) {
-                if (!is_array($functionDeclaration) || !isset($functionDeclaration['name']) || !isset($functionDeclaration['description']) || !isset($functionDeclaration['parameters'])) {
-                    throw new \Exception('Error: Each function declaration must be an array with "name", "description", and "parameters" keys.');
-                }
+            if (!is_string($functionDeclaration['name']) || !is_string($functionDeclaration['description']) || !is_array($functionDeclaration['parameters'])) {
+                throw new \Exception('Error: "name" and "description" must be strings, "parameters" must be an array.');
+            }
 
-                if (!is_string($functionDeclaration['name']) || !is_string($functionDeclaration['description']) || !is_array($functionDeclaration['parameters'])) {
-                    throw new \Exception('Error: "name" and "description" must be strings, "parameters" must be an array.');
-                }
+            if (!isset($functionDeclaration['parameters']['type']) || $functionDeclaration['parameters']['type'] !== 'object' || !isset($functionDeclaration['parameters']['properties']) || !is_array($functionDeclaration['parameters']['properties'])) {
+                throw new \Exception('Error: "parameters" must be an object with "type" set to "object" and "properties" as an array.');
+            }
 
-                if (!isset($functionDeclaration['parameters']['type']) || $functionDeclaration['parameters']['type'] !== 'object' || !isset($functionDeclaration['parameters']['properties']) || !is_array($functionDeclaration['parameters']['properties'])) {
-                    throw new \Exception('Error: "parameters" must be an object with "type" set to "object" and "properties" as an array.');
+            foreach ($functionDeclaration['parameters']['properties'] as $property) {
+                if (!is_array($property) || !isset($property['type']) || !isset($property['description']) || !is_string($property['type']) || !is_string($property['description'])) {
+                    throw new \Exception('Error: Each property in "properties" must be an array with "type" and "description" keys, both of which must be strings.');
                 }
+                if (!in_array($property['type'], $valid_property_types)) {
+                    throw new \Exception('Error: Invalid property type {$property["type"]} in {$functionDeclaration["name"]} function declaration.');
+                }
+            }
 
-                foreach ($functionDeclaration['parameters']['properties'] as $property) {
-                    if (!is_array($property) || !isset($property['type']) || !isset($property['description']) || !is_string($property['type']) || !is_string($property['description'])) {
-                        throw new \Exception('Error: Each property in "properties" must be an array with "type" and "description" keys, both of which must be strings.');
-                    }
-                }
-
-                if (isset($functionDeclaration['parameters']['required']) && (!is_array($functionDeclaration['parameters']['required']) || array_diff($functionDeclaration['parameters']['required'], array_keys($functionDeclaration['parameters']['properties'])))) {
-                    throw new \Exception('Error: If "required" is set, it must be an array of strings that are keys in "properties".');
-                }
+            if (isset($functionDeclaration['parameters']['required']) && (!is_array($functionDeclaration['parameters']['required']) || array_diff($functionDeclaration['parameters']['required'], array_keys($functionDeclaration['parameters']['properties'])))) {
+                throw new \Exception('Error: If "required" is set, it must be an array of strings that are keys in "properties".');
             }
         }
 
