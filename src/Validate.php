@@ -68,14 +68,14 @@ class Validate
     {
         $required_keys = ['projectId', 'regionName', 'credentialsPath', 'modelName'];
         $allowed_keys = ['ignoreModelValidation', 'ignoreRegionValidation'];
-
+    
         $actual_keys = array_keys($client_config);
-
+    
         // Check if all required keys are present
-        if (count(array_diff($required_keys, $actual_keys)) > 0) {
+        if (count(array_intersect($required_keys, $actual_keys)) !== count($required_keys)) {
             throw new \Exception('Error: Missing required keys in client config.');
         }
-
+    
         // Check if all actual keys are either required or allowed
         if (count(array_diff($actual_keys, array_merge($required_keys, $allowed_keys))) > 0) {
             throw new \Exception('Error: Unexpected keys found in client config.');
