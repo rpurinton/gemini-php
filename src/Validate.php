@@ -66,29 +66,45 @@ class Validate
      */
     public static function clientConfig(mixed $client_config): bool
     {
-        $expected_keys = ['projectId', 'regionName', 'credentialsPath', 'modelName'];
+        $required_keys = ['projectId', 'regionName', 'credentialsPath', 'modelName'];
+        $allowed_keys = ['ignoreModelValidation', 'ignoreRegionValidation'];
+
         $actual_keys = array_keys($client_config);
-        sort($expected_keys);
-        sort($actual_keys);
+
+        // Check if all required keys are present
+        if (count(array_diff($required_keys, $actual_keys)) > 0) {
+            throw new \Exception('Error: Missing required keys in client config.');
+        }
+
+        // Check if all actual keys are either required or allowed
+        if (count(array_diff($actual_keys, array_merge($required_keys, $allowed_keys))) > 0) {
+            throw new \Exception('Error: Unexpected keys found in client config.');
+        }
 
         if (!isset($client_config)) throw new \Exception('Error: Client config not set.');
         if (!is_array($client_config)) throw new \Exception('Error: Client config must be an array.');
-        if ($expected_keys !== $actual_keys) throw new \Exception('Error: Client config keys do not match expected keys.');
 
         if (!is_string($client_config['projectId'])) throw new \Exception('Error: projectId must be a string.');
         if (!is_string($client_config['regionName'])) throw new \Exception('Error: regionName must be a string.');
-        if (!in_array($client_config['regionName'], self::VALID_REGIONS)) throw new \Exception('Error: Invalid regionName in client config.');
+        if (!isset($client_config['ignoreRegionValidation']) || $client_config['ignoreRegionValidation'] !== 'true') {
+            if (!in_array($client_config['regionName'], self::VALID_REGIONS)) {
+                throw new \Exception('Error: Invalid regionName in client config.');
+            }
+        }
         if (!is_string($client_config['credentialsPath'])) throw new \Exception('Error: credentialsPath must be a string.');
         if (!self::credentials($client_config['credentialsPath'])) throw new \Exception('Error: Invalid credentialsPath in client config.');
         if (!is_string($client_config['modelName'])) throw new \Exception('Error: modelName must be a string.');
-        if (!in_array($client_config['modelName'], self::VALID_MODELS)) throw new \Exception('Error: Invalid modelName in client config.');
-
+        if (!isset($client_config['ignoreModelValidation']) || $client_config['ignoreModelValidation'] !== 'true') {
+            if (!in_array($client_config['modelName'], self::VALID_MODELS)) {
+                throw new \Exception('Error: Invalid modelName in client config.');
+            }
+        }
         return true;
     }
 
     /**
      * Validates the credentials.
-     * 
+     *
      * @param mixed $credentialsPath The path to the credentials file.
      * @return bool Returns true if validation passes, throws an exception otherwise.
      * @throws \Exception If the credentials file is not found, not readable, or if the contents cannot be parsed.
@@ -175,8 +191,8 @@ class Validate
             throw new \Exception('Error: topK must be between 0 and 40.');
         }
 
-        if ($generation_config['maxOutputTokens'] > 2048 || $generation_config['maxOutputTokens'] < 0) {
-            throw new \Exception('Error: maxOutputTokens must be between 0 and 2048.');
+        if ($generation_config['maxOutputTokens'] > 8192 || $generation_config['maxOutputTokens'] < 0) {
+            throw new \Exception('Error: maxOutputTokens must be between 0 and 8192.');
         }
 
         return true;

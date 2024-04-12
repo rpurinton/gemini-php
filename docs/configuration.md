@@ -8,6 +8,8 @@ Configuring Gemini PHP is straightforward. You need to provide several key piece
 - `regionName`: The Google Cloud region where your Vertex AI API is hosted.
 - `credentialsPath`: The file path to your service account credentials JSON.
 - `modelName`: The name of the AI model you wish to use, such as `gemini-pro` or `gemini-pro-vision`.
+- `ignoreModelValidation`: Set to true to not be constricted to `gemini-pro` or `gemini-pro-vision`.
+- `ignoreRegionValidation`: Set to true to not be constricted to hardcoded regions.
 
 ## Example Configuration
 
