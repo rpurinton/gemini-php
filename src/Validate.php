@@ -71,7 +71,7 @@ class Validate
     public static function clientConfig(mixed $client_config): bool
     {
         $required_keys = ['projectId', 'regionName', 'credentialsPath', 'modelName'];
-        $allowed_keys = ['ignoreModelValidation', 'ignoreRegionValidation'];
+        $allowed_keys = ['ignoreModelValidation', 'ignoreRegionValidation', 'streamContent'];
     
         $actual_keys = array_keys($client_config);
     
