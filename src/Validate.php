@@ -26,6 +26,10 @@ class Validate
     const VALID_MODELS = [
         'gemini-pro', // 32k token model (text + function calling)
         'gemini-pro-vision', // 16k multi-modal model (text + images + video + function calling)
+        'gemini-1.5-pro-001',
+        'gemini-1.5-flash-001',
+        'gemini-1.0-pro-vision-001',
+        'gemini-experimental',
     ];
 
     const VALID_CATEGORIES = [
