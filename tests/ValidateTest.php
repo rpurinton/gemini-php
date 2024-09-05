@@ -11,7 +11,7 @@ class ValidateTest extends TestCase
             'projectId' => 'test_project',
             'regionName' => 'us-central1',
             'credentialsPath' => __DIR__ . '/test_configs/service_account.json',
-            'modelName' => 'gemini-pro'
+            'modelName' => 'gemini-1.4-flash'
         ];
 
         $this->assertTrue(Validate::clientConfig($valid_config));
@@ -20,7 +20,7 @@ class ValidateTest extends TestCase
             'projectId' => 'test_project',
             'regionName' => 'invalid_region',
             'credentialsPath' => '/not/a/path/to/credentials.json',
-            'modelName' => 'gemini-free'
+            'modelName' => 'gemini-fake-model'
         ];
 
         $this->expectException(\Exception::class);
