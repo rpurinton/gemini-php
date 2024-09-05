@@ -12,6 +12,8 @@ namespace RPurinton\GeminiPHP;
  */
 class Validate
 {
+    const MAX_TOKENS = 2000000;
+
     const VALID_REGIONS = [
         'us-central1', // Iowa
         'us-west4', // Las Vegas, Nevada
@@ -198,8 +200,8 @@ class Validate
             throw new \Exception('Error: topK must be between 0 and 40.');
         }
 
-        if ($generation_config['maxOutputTokens'] > 8192 || $generation_config['maxOutputTokens'] < 0) {
-            throw new \Exception('Error: maxOutputTokens must be between 0 and 8192.');
+        if ($generation_config['maxOutputTokens'] > self::MAX_TOKENS || $generation_config['maxOutputTokens'] < 0) {
+            throw new \Exception('Error: maxOutputTokens must be between 0 and ' . self::MAX_TOKENS . '.');
         }
 
         return true;
