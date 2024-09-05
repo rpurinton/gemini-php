@@ -7,7 +7,7 @@ use TikToken\Encoder;
 /**
  * Class GeminiPrompt
  * Handles the generation and management of content for the Gemini system.
- * 
+ *
  * @package RPurinton\GeminiPHP
  */
 class GeminiPrompt
@@ -24,6 +24,11 @@ class GeminiPrompt
      * @var array Base contents that are used to reset the current contents.
      */
     private array $baseContents;
+
+    /**
+     * @var array System instruction for content generation.
+     */
+    private array $systemInstruction;
 
     /**
      * @var array Current contents that are being managed.
@@ -54,6 +59,7 @@ class GeminiPrompt
     public function __construct(array $config)
     {
         $this->generationConfig = $config['generation_config'] ?? [];
+        $this->systemInstruction = $config['systemInstruction'] ?? [];
         $this->baseContents = $config['contents'] ?? [];
         $this->contents = $config['contents'] ?? [];
         $this->safetySettings = $config['safety_settings'] ?? [];
@@ -64,7 +70,7 @@ class GeminiPrompt
 
     /**
      * Sets the entire contents array.
-     * 
+     *
      * @param array $contents The contents array to be set.
      * @return bool Returns true on successful setting.
      * @throws \Exception If content validation fails.
@@ -78,7 +84,7 @@ class GeminiPrompt
 
     /**
      * Adds multiple messages to the contents array.
-     * 
+     *
      * @param array $contents The contents to be added.
      * @return bool Returns true on successful addition.
      * @throws \Exception If content validation fails.
@@ -171,6 +177,7 @@ class GeminiPrompt
     {
         $this->validate();
         return json_encode([
+            'system_instruction' => $this->systemInstruction,
             'contents' => $this->contents,
             'tools' => $this->tools,
             'safety_settings' => $this->safetySettings,
