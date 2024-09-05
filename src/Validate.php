@@ -26,20 +26,27 @@ class Validate
     const VALID_MODELS = [
         'gemini-pro', // 32k token model (text + function calling)
         'gemini-pro-vision', // 16k multi-modal model (text + images + video + function calling)
+        'gemini-1.5-pro-001', // 2M token multi-modal model (text + images + audio+ video + function calling)
+        'gemini-1.5-flash-001', // 1M token lower-latency multi-modal model (text + images + audio+ video + function calling)
+        'gemini-1.0-pro-vision-001', // 1M token multi-modal model (text + images + video + function calling)
+        'gemini-experimental', // 32k token model (text + function calling)
+
     ];
 
     const VALID_CATEGORIES = [
         'HARM_CATEGORY_SEXUALLY_EXPLICIT',
         'HARM_CATEGORY_HATE_SPEECH',
         'HARM_CATEGORY_HARASSMENT',
-        'HARM_CATEGORY_DANGEROUS_CONTENT'
+        'HARM_CATEGORY_DANGEROUS_CONTENT',
     ];
 
     const VALID_THRESHOLDS = [
         'BLOCK_NONE',
         'BLOCK_LOW_AND_ABOVE',
-        'BLOCK_MED_AND_ABOVE',
-        'BLOCK_HIGH_AND_ABOVE'
+        'BLOCK_MEDIUM_AND_ABOVE',
+        'BLOCK_ONLY_HIGH',
+        'BLOCK_HIGH_AND_ABOVE',
+        'HARM_BLOCK_THRESHOLD_UNSPECIFIED'
     ];
 
     const VALID_PROPERTY_TYPES = [
@@ -67,15 +74,15 @@ class Validate
     public static function clientConfig(mixed $client_config): bool
     {
         $required_keys = ['projectId', 'regionName', 'credentialsPath', 'modelName'];
-        $allowed_keys = ['ignoreModelValidation', 'ignoreRegionValidation'];
-    
+        $allowed_keys = ['ignoreModelValidation', 'ignoreRegionValidation', 'streamContent'];
+
         $actual_keys = array_keys($client_config);
-    
+
         // Check if all required keys are present
         if (count(array_intersect($required_keys, $actual_keys)) !== count($required_keys)) {
             throw new \Exception('Error: Missing required keys in client config.');
         }
-    
+
         // Check if all actual keys are either required or allowed
         if (count(array_diff($actual_keys, array_merge($required_keys, $allowed_keys))) > 0) {
             throw new \Exception('Error: Unexpected keys found in client config.');

@@ -14,6 +14,7 @@ class GeminiClient
     private ?string $regionName;
     private ?string $modelName;
     private AccessTokenManager $tokenManager;
+    private ?bool $streamContent = true;
 
 
     /**
@@ -35,6 +36,7 @@ class GeminiClient
         $this->regionName = $config['regionName'];
         $this->modelName = $config['modelName'];
         $this->tokenManager = new AccessTokenManager($config['credentialsPath']);
+        $this->streamContent = isset($config['streamContent']) ? $config['streamContent'] : true;
     }
 
     /**
@@ -80,7 +82,7 @@ class GeminiClient
             '/projects/' . $this->projectId .
             '/locations/' . $this->regionName .
             '/publishers/google/models/' . $this->modelName .
-            ':streamGenerateContent';
+            ($this->streamContent ? ':streamGenerateContent' : ':generateContent');
     }
 
     /**
