@@ -11,7 +11,7 @@ class ValidateTest extends TestCase
             'projectId' => 'test_project',
             'regionName' => 'us-central1',
             'credentialsPath' => __DIR__ . '/test_configs/service_account.json',
-            'modelName' => 'gemini-1.4-flash'
+            'modelName' => 'gemini-1.5-flash'
         ];
 
         $this->assertTrue(Validate::clientConfig($valid_config));
