@@ -177,11 +177,11 @@ class GeminiPrompt
     {
         $this->validate();
         return json_encode([
-            'system_instruction' => $this->systemInstruction,
+            'systemInstruction' => $this->systemInstruction,
             'contents' => $this->contents,
             'tools' => $this->tools,
-            'safety_settings' => $this->safetySettings,
-            'generation_config' => $this->generationConfig
+            'safetySettings' => $this->safetySettings,
+            'generationConfig' => $this->generationConfig
         ]);
     }
 

@@ -24,12 +24,15 @@ class Validate
     ];
 
     const VALID_MODELS = [
-        'gemini-pro', // 32k token model (text + function calling)
-        'gemini-pro-vision', // 16k multi-modal model (text + images + video + function calling)
-        'gemini-1.5-pro-001', // 2M token multi-modal model (text + images + audio+ video + function calling)
-        'gemini-1.5-flash-001', // 1M token lower-latency multi-modal model (text + images + audio+ video + function calling)
-        'gemini-1.0-pro-vision-001', // 1M token multi-modal model (text + images + video + function calling)
-        'gemini-experimental', // 32k token model (text + function calling)
+        'gemini-1.5-flash', // Lower-latency multi-modal model (text + images + audio + video + function calling)
+        'gemini-1.5-flash-001', // Lower-latency multi-modal model (text + images + audio + video + function calling)
+        'gemini-1.5-pro', // Multi-modal model (text + images + audio + video + function calling)
+        'gemini-1.5-pro-001', // Multi-modal model (text + images + audio + video + function calling)
+        'gemini-1.0-pro', // Multi-modal model (text + images + video + function calling)
+        'gemini-1.0-pro-001', // Multi-modal model (text + images + video + function calling)
+        'gemini-1.0-pro-002', // Multi-modal model (text + images + video + function calling)
+        'gemini-1.0-pro-vision', // Multi-modal model (text + images + video + function calling)
+        'gemini-1.0-pro-vision-001', // Multi-modal model (text + images + video + function calling)
     ];
 
     const VALID_CATEGORIES = [
