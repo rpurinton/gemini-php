@@ -177,7 +177,7 @@ class GeminiPrompt
     {
         $this->validate();
         return json_encode([
-            'systemInstruction' => $this->systemInstruction,
+            //'systemInstruction' => $this->systemInstruction,
             'contents' => $this->contents,
             'tools' => $this->tools,
             'safetySettings' => $this->safetySettings,
