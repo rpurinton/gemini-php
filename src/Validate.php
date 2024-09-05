@@ -30,7 +30,6 @@ class Validate
         'gemini-1.5-flash-001', // 1M token lower-latency multi-modal model (text + images + audio+ video + function calling)
         'gemini-1.0-pro-vision-001', // 1M token multi-modal model (text + images + video + function calling)
         'gemini-experimental', // 32k token model (text + function calling)
-
     ];
 
     const VALID_CATEGORIES = [
@@ -75,7 +74,6 @@ class Validate
     {
         $required_keys = ['projectId', 'regionName', 'credentialsPath', 'modelName'];
         $allowed_keys = ['ignoreModelValidation', 'ignoreRegionValidation', 'streamContent'];
-
         $actual_keys = array_keys($client_config);
 
         // Check if all required keys are present
@@ -124,9 +122,17 @@ class Validate
         $json = json_decode($contents, true) or throw new \Exception('Error: Unable to parse credentials file.');
 
         $requiredKeys = [
-            'type', 'project_id', 'private_key_id', 'private_key', 'client_email',
-            'client_id', 'auth_uri', 'token_uri', 'auth_provider_x509_cert_url',
-            'client_x509_cert_url', 'universe_domain'
+            'type',
+            'project_id',
+            'private_key_id',
+            'private_key',
+            'client_email',
+            'client_id',
+            'auth_uri',
+            'token_uri',
+            'auth_provider_x509_cert_url',
+            'client_x509_cert_url',
+            'universe_domain'
         ];
 
         foreach ($requiredKeys as $key) {

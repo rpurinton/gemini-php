@@ -84,7 +84,7 @@ class GeminiClient
             '/publishers/google/models/' . $this->modelName .
             ($this->streamContent ? ':streamGenerateContent' : ':generateContent');
     }
-
+    
     /**
      * Builds the headers.
      * @return array
